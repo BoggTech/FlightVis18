@@ -18,17 +18,7 @@ class Button extends Widget {
   }
 
   Button(float x, float y, float width, float height, color widgetColor, Widget parent) {
-    setParent(parent);
-    setWidth(width);
-    setHeight(height);
-    setColor(widgetColor);
-    setX(x);
-    setY(y);
-    setRotation(0);
-    
-    setBorderColor(color(0));
-    setSelectedBorderColor(color(255));
-    setDefaultBorderColor(color(0));
+    super(x, y, width, height, widgetColor, parent);
   }
   
   void onClick() {
