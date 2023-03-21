@@ -18,6 +18,14 @@ class Widget {
   Widget() {
     this(0, 0, 0, 0, color(0), null);
   }
+  
+  Widget(float x, float y, float width, float height) {
+    this(x, y, width, height, color(128), null);
+  }
+  
+  Widget(float x, float y, float width, float height, Widget parent) {
+    this(x, y, width, height, color(128), parent);
+  }
 
   Widget(float x, float y, float width, float height, color widgetColor) {
     this(x, y, width, height, widgetColor, null);
@@ -57,11 +65,11 @@ class Widget {
   float getY() {
     return y;
   }
-  
+
   float getEffectiveX() {
     return effectiveX;
   }
-  
+
   float getEffectiveY() {
     return effectiveY;
   }
@@ -108,11 +116,11 @@ class Widget {
   void setHeight(float height) {
     this.height = height;
   }
-  
+
   float getRotation() {
     return rotation;
   }
-  
+
   void setRotation(float rotation) {
     this.rotation = rotation;
   }
@@ -126,11 +134,11 @@ class Widget {
       // no need / very not good.. cant own yourself
       return;
     } else {
+      // if this returns false, for whatever reason, we'll overwrite anyway.
+      if ( this.parent != null ) {
+        this.parent.removeChild(this);
+      }
       if ( parent != null ) {
-        // if this returns false, for whatever reason, we'll overwrite anyway.
-        if ( this.parent != null ) {
-          this.parent.removeChild(this);
-        }
         parent.addChild(this);
       }
       this.parent = parent;
@@ -153,11 +161,11 @@ class Widget {
       child.setParent(this);
     }
   }
-  
+
   void removeParent() {
     setParent(null);
   }
-  
+
   boolean removeChild(Widget child) {
     if ( children.get(child.getId()) != child ) {
       // i don't own you
@@ -181,12 +189,15 @@ class Widget {
   }
 
   void onHover() {
+    // TODO
   }
 
   void onClick() {
+    // TODO
   }
 
   void onDrag() {
+    // TODO
   }
 
   void draw() {
