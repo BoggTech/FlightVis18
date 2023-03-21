@@ -1,5 +1,6 @@
 # FlightVis
 Program designed for visualizing flight data in Processing 4.
 
-#Prerequisites
+**Prerequisites**
+
 Geomerative: http://www.ricardmarxer.com/geomerative/
