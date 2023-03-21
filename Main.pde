@@ -13,7 +13,7 @@ void setup() {
   screen = new Screen();
   
   parent = new Widget(SCREENX/2, SCREENY/2, 50, 50);
-  widget2 = new Widget(10, 10, parent.getWidth()-20, parent.getHeight()-20, parent); // technically you don't even need to assign this to a var
+  widget2 = new Button(10, 10, parent.getWidth()-20, parent.getHeight()-20, parent); // technically you don't even need to assign this to a var
   
   screen.addWidget(parent);
 }

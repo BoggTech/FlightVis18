@@ -227,13 +227,17 @@ class Widget {
   }
 
   void mousePressed(int mouseX, int mouseY) {
-    println("Pressed!");
+    onClick();
     for ( int i = 0; i < getChildrenLength(); i++ ) {
       Widget widget = (Widget) getChild(i);
       if ( widget.isTouching(mouseX, mouseY) ) {
         widget.mousePressed(mouseX, mouseY);
       }
     }
+  }
+  
+  void onClick() {
+    // boring
   }
 
   void mouseDragged() {

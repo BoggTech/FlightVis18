@@ -1,5 +1,37 @@
 class Button extends Widget {
   private int event;
   
-  // todo
+  Button() {
+    this(0, 0, 0, 0, color(0), null);
+  }
+  
+  Button(float x, float y, float width, float height) {
+    this(x, y, width, height, color(128), null);
+  }
+  
+  Button(float x, float y, float width, float height, Widget parent) {
+    this(x, y, width, height, color(128), parent);
+  }
+
+  Button(float x, float y, float width, float height, color widgetColor) {
+    this(x, y, width, height, widgetColor, null);
+  }
+
+  Button(float x, float y, float width, float height, color widgetColor, Widget parent) {
+    setParent(parent);
+    setWidth(width);
+    setHeight(height);
+    setColor(widgetColor);
+    setX(x);
+    setY(y);
+    setRotation(0);
+    
+    setBorderColor(color(0));
+    setSelectedBorderColor(color(255));
+    setDefaultBorderColor(color(0));
+  }
+  
+  void onClick() {
+    setColor(color(random(0,255)));
+  }
 }
