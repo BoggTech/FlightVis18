@@ -18,4 +18,9 @@ class Screen extends Widget {
     // just a reskin of removeChild
     removeChild(widget);
   }
+  
+  boolean isTouching(int mouseX, int mouseY) {
+    return true; // whole screen
+    // may change this later
+  }
 }
