@@ -3,7 +3,7 @@ float[] data;
 String[] labels;
 
 void setup() {
-  float[] data = {99,1};
+  float[] data = {50,50,50,50,50,50};
   String[] labels= {"one", "two"};
   size(640, 640);
   thePieChart= new pieChart(data, labels, 200, 600, 600);

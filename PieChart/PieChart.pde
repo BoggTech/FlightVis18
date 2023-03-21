@@ -32,12 +32,12 @@ public class pieChart {
   //one
 
   void draw() {
-    int lastAngle=0;
+    float lastAngle=0;
     for (int i=0; i<data.length; i++) {
       float colour = map(i, 0, data.length, 200, 255);
       fill(colour);
       arc(xpos/2, ypos/2, diameter, diameter, lastAngle,
-        lastAngle+radians(data[i]*360/sum)); //issue with positions of sectors 3/21 7:50pm
+        lastAngle+radians(data[i]*360/sum));
       lastAngle+=radians(data[i]*360/sum);
     }
   }
