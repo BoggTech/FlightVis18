@@ -28,9 +28,17 @@ class Screen extends Widget {
     for ( int i = 0; i < getChildrenLength(); i++ ) {
       Widget child = (Widget) getChild(i);
       if ( child.isTouching(mouseX, mouseY) ) {
-        return child.getEvent();
+        int event = child.getEvent();
+        if ( handleEvent(event) ) {
+          return event;
+        }
       }
     }
-    return -1;
+    return GLOBAL_EVENT_NULL;
+  }
+
+  boolean handleEvent(int event) {
+    // return true to pass the event up the chain; do things + return false to handle it within the screen
+    return true;
   }
 }

@@ -1,6 +1,7 @@
 class Widget {
   // class for a basic widget square
-  // will move with its parent,
+  // will move with its parent
+  // TODO: may rename effectiveX to be the x position, and turn how X is currently into relative x?
   private float x;
   private float y;
   private float originX;
@@ -22,11 +23,11 @@ class Widget {
   Widget() {
     this(0, 0, 0, 0, color(0), null);
   }
-  
+
   Widget(float x, float y, float width, float height) {
     this(x, y, width, height, color(128), null);
   }
-  
+
   Widget(float x, float y, float width, float height, Widget parent) {
     this(x, y, width, height, color(128), parent);
   }
@@ -45,7 +46,7 @@ class Widget {
     setColor(widgetColor);
     updatePosition();
     rotation = 0;
-    
+
     borderColor = color(0);
     selectedBorderColor = color(255);
     defaultBorderColor = color(0);
@@ -94,15 +95,15 @@ class Widget {
   color getColor() {
     return widgetColor;
   }
-  
+
   void setDefaultBorderColor(color borderColor) {
     defaultBorderColor = borderColor;
   }
-  
+
   void setSelectedBorderColor(color borderColor) {
     selectedBorderColor = borderColor;
   }
-  
+
   void setBorderColor(color borderColor) {
     this.borderColor = borderColor;
   }
@@ -115,11 +116,11 @@ class Widget {
     ArrayList<Widget> copy = (ArrayList) children.clone();
     return copy;
   }
-  
+
   int getChildrenLength() {
     return children.size();
   }
-  
+
   Object getChild(int id) {
     if ( id >= 0 && id < children.size() ) {
       return (Widget) children.get(id);
@@ -236,13 +237,34 @@ class Widget {
       }
     }
   }
-  
+
   void onClick() {
     // boring
   }
 
-  void mouseDragged() {
-    // TODO
+  void mouseDragged(int mouseX, int mouseY, int pmouseX, int pmouseY) {
+    onDrag(mouseX, mouseY, pmouseX, pmouseY);
+    for ( int i = 0; i < getChildrenLength(); i++ ) {
+      Widget widget = (Widget) getChild(i);
+      if ( widget.isTouching(mouseX, mouseY) ) {
+        widget.mouseDragged(mouseX, mouseY, pmouseX, pmouseY);
+      }
+    }
+  }
+
+  void onDrag(int mouseX, int mouseY, int pmouseX, int pmouseY) {
+    // boring
+  }
+
+  void mouseReleased() {
+    onMouseReleased();
+    for ( int i = 0; i < getChildrenLength(); i++ ) {
+      Widget widget = (Widget) getChild(i);
+      widget.mouseReleased();
+    }
+  }
+
+  void onMouseReleased() {
   }
 
   void draw() {
@@ -263,7 +285,7 @@ class Widget {
       widget.draw();
     }
   }
-  
+
   void checkCollisions(int mouseX, int mouseY) {
     for ( int i = 0; i < getChildrenLength(); i++ ) {
       Widget widget = (Widget) getChild(i);
@@ -272,11 +294,11 @@ class Widget {
       }
     }
   }
-  
-  void setEvent(int event)  {
+
+  void setEvent(int event) {
     this.event = event;
   }
-  
+
   int getEvent() {
     return event;
   }

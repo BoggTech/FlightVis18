@@ -2,16 +2,13 @@ public class PieChart extends Widget {
   //variables used for chart, each index of the int array will be something such as
   //airport or state and are to be put into the labels array, the numbers at each
   //index will represent data such as number of flights.
-  private int xpos;
-  private int ypos;
   private int diameter;
   float[] data;
   String[] labels;
   private float sum;
 
-  PieChart(float[]data, String[] labels, int diameter, int ypos, int xpos) {
-    this.xpos=xpos;
-    this.ypos=ypos;
+  PieChart(float[]data, String[] labels, int diameter, int xpos, int ypos) {
+    super(xpos, ypos, 0, 0);
     this.diameter=diameter;
     this.data=data;
     this.labels=labels;
@@ -32,14 +29,13 @@ public class PieChart extends Widget {
   //arc() draws the arc for the current index, and the radians() will ensure the arcs
   //will always form a circle no matter the number of indices or the magnitude in each
   //one
-
   void draw() {
     stroke(0);
     float lastAngle=0;
     for (int i=0; i<data.length; i++) {
       float colour = map(i, 0, data.length, 0, 255);
       fill(colour);
-      arc(xpos/2, ypos/2, diameter, diameter, lastAngle,
+      arc(getEffectiveX(), getEffectiveY(), diameter, diameter, lastAngle,
         lastAngle+radians(data[i]*360/sum));
       lastAngle+=radians(data[i]*360/sum);
     }
