@@ -17,6 +17,7 @@ class Widget {
   private ArrayList children;
   private int id;
   private float rotation;
+  private int event;
 
   Widget() {
     this(0, 0, 0, 0, color(0), null);
@@ -270,5 +271,13 @@ class Widget {
         widget.mouseTouching();
       }
     }
+  }
+  
+  void setEvent(int event)  {
+    this.event = event;
+  }
+  
+  int getEvent() {
+    return event;
   }
 }

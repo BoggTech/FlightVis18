@@ -1,6 +1,4 @@
-class Button extends Widget {
-  private int event;
-  
+class Button extends Widget {  
   Button() {
     this(0, 0, 0, 0, color(0), null);
   }
