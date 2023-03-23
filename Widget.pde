@@ -17,6 +17,7 @@ class Widget {
   private ArrayList children;
   private int id;
   private float rotation;
+  private int event;
 
   Widget() {
     this(0, 0, 0, 0, color(0), null);
@@ -227,13 +228,17 @@ class Widget {
   }
 
   void mousePressed(int mouseX, int mouseY) {
-    println("Pressed!");
+    onClick();
     for ( int i = 0; i < getChildrenLength(); i++ ) {
       Widget widget = (Widget) getChild(i);
       if ( widget.isTouching(mouseX, mouseY) ) {
         widget.mousePressed(mouseX, mouseY);
       }
     }
+  }
+  
+  void onClick() {
+    // boring
   }
 
   void mouseDragged() {
@@ -266,5 +271,13 @@ class Widget {
         widget.mouseTouching();
       }
     }
+  }
+  
+  void setEvent(int event)  {
+    this.event = event;
+  }
+  
+  int getEvent() {
+    return event;
   }
 }
