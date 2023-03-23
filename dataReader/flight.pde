@@ -114,4 +114,8 @@ class FlightObject {
     return distance;
   }
   
+  Double getCancelled() {
+    return cancelled;
+  }
+  
 }  
