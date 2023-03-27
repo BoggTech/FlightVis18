@@ -1,4 +1,5 @@
-Screen screen;
+Screen screen, screen2, activeScreen;
+boolean transition = false;
 
 void settings() {
   size(SCREENX, SCREENY);
@@ -6,25 +7,34 @@ void settings() {
 
 void setup() {
   screen = new DebugScreen();
+  screen2 = new DebugScreen2();
+  activeScreen = screen;
 }
 
 void draw() {
   background(100);
-  screen.draw();
+  activeScreen.checkCollisions(mouseX, mouseY);
+  activeScreen.draw();
 }
 
 void mousePressed() {
   // for "global" events  not sure if this'll be needed (beyond screen transitions maybe?
   // global events are always negative; 0 is "null event"
-  screen.mousePressed(mouseX, mouseY);
-  int event = screen.getEvent(mouseX, mouseY);
+  activeScreen.mousePressed(mouseX, mouseY);
+  int event = activeScreen.getEvent(mouseX, mouseY);
   switch( event ) {
   case GLOBAL_EVENT_RIGHT:
     // just a test; shifts it forward to show the button works
-    screen.setX(screen.getX()+50);
+    activeScreen.setX(screen.getX()+50);
     break;
   case GLOBAL_EVENT_LEFT:
-    screen.setX(screen.getX()-50);
+    activeScreen.setX(screen.getX()-50);
+    break;
+  case GLOBAL_EVENT_DEBUG_1:
+    activeScreen = screen;
+    break;
+  case GLOBAL_EVENT_DEBUG_2:
+    activeScreen = screen2;
     break;
   case GLOBAL_EVENT_NULL:
     break;
@@ -32,5 +42,5 @@ void mousePressed() {
 }
 
 void mouseDragged() {
-  screen.mouseDragged(mouseX, mouseY, pmouseX, pmouseY);
+  activeScreen.mouseDragged(mouseX, mouseY, pmouseX, pmouseY);
 }
