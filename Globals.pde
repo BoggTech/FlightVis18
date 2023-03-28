@@ -1,0 +1,14 @@
+final int SCREENX = 600;
+final int SCREENY = 600;
+final int GLOBAL_EVENT_NULL = 0;
+final int GLOBAL_EVENT_RIGHT = -1;
+final int GLOBAL_EVENT_LEFT = -2;
+final int SEARCH_EVENT_1 = 1;
+final int SEARCH_EVENT_2 = 2;
+final int SEARCH_EVENT_3 = 3;
+final int SEARCH_EVENT_4 = 4;
+final int SEARCH_EVENT_5 = 5;
+final int SEARCH_EVENT_6 = 6;
+final int SEARCH_EVENT_7 = 7;
+final int GLOBAL_EVENT_DEBUG_1 = -3;
+final int GLOBAL_EVENT_DEBUG_2 = -4;

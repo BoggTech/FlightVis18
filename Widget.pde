@@ -1,6 +1,7 @@
 class Widget {
   // class for a basic widget square
-  // will move with its parent,
+  // will move with its parent
+  // TODO: may rename effectiveX to be the x position, and turn how X is currently into relative x?
   private float x;
   private float y;
   private float originX;
@@ -10,13 +11,25 @@ class Widget {
   private float width;
   private float height;
   private color widgetColor;
+  private color borderColor;
+  private color defaultBorderColor;
+  private color selectedBorderColor;
   private Widget parent;
-  private ArrayList<Widget> children;
+  private ArrayList children;
   private int id;
   private float rotation;
+  private int event;
 
   Widget() {
     this(0, 0, 0, 0, color(0), null);
+  }
+
+  Widget(float x, float y, float width, float height) {
+    this(x, y, width, height, color(128), null);
+  }
+
+  Widget(float x, float y, float width, float height, Widget parent) {
+    this(x, y, width, height, color(128), parent);
   }
 
   Widget(float x, float y, float width, float height, color widgetColor) {
@@ -24,7 +37,7 @@ class Widget {
   }
 
   Widget(float x, float y, float width, float height, color widgetColor, Widget parent) {
-    children = new ArrayList<Widget>();
+    children = new ArrayList<>();
     this.x = x;
     this.y = y;
     setParent(parent);
@@ -33,6 +46,10 @@ class Widget {
     setColor(widgetColor);
     updatePosition();
     rotation = 0;
+
+    borderColor = color(0);
+    selectedBorderColor = color(255);
+    defaultBorderColor = color(0);
   }
 
   private void updatePosition() {
@@ -46,7 +63,8 @@ class Widget {
     effectiveX = originX + x;
     effectiveY = originY + y;
     for ( int i = 0; i < children.size(); i++ ) {
-      children.get(i).updatePosition();
+      Widget widget = (Widget) children.get(i);
+      widget.updatePosition();
     }
   }
 
@@ -57,11 +75,11 @@ class Widget {
   float getY() {
     return y;
   }
-  
+
   float getEffectiveX() {
     return effectiveX;
   }
-  
+
   float getEffectiveY() {
     return effectiveY;
   }
@@ -78,6 +96,18 @@ class Widget {
     return widgetColor;
   }
 
+  void setDefaultBorderColor(color borderColor) {
+    defaultBorderColor = borderColor;
+  }
+
+  void setSelectedBorderColor(color borderColor) {
+    selectedBorderColor = borderColor;
+  }
+
+  void setBorderColor(color borderColor) {
+    this.borderColor = borderColor;
+  }
+
   Widget getParent() {
     return parent;
   }
@@ -85,6 +115,18 @@ class Widget {
   ArrayList<Widget> getChildren() {
     ArrayList<Widget> copy = (ArrayList) children.clone();
     return copy;
+  }
+
+  int getChildrenLength() {
+    return children.size();
+  }
+
+  Object getChild(int id) {
+    if ( id >= 0 && id < children.size() ) {
+      return (Widget) children.get(id);
+    } else {
+      return null;
+    }
   }
 
   int getId() {
@@ -108,11 +150,11 @@ class Widget {
   void setHeight(float height) {
     this.height = height;
   }
-  
+
   float getRotation() {
     return rotation;
   }
-  
+
   void setRotation(float rotation) {
     this.rotation = rotation;
   }
@@ -126,11 +168,11 @@ class Widget {
       // no need / very not good.. cant own yourself
       return;
     } else {
+      // if this returns false, for whatever reason, we'll overwrite anyway.
+      if ( this.parent != null ) {
+        this.parent.removeChild(this);
+      }
       if ( parent != null ) {
-        // if this returns false, for whatever reason, we'll overwrite anyway.
-        if ( this.parent != null ) {
-          this.parent.removeChild(this);
-        }
         parent.addChild(this);
       }
       this.parent = parent;
@@ -153,11 +195,11 @@ class Widget {
       child.setParent(this);
     }
   }
-  
+
   void removeParent() {
     setParent(null);
   }
-  
+
   boolean removeChild(Widget child) {
     if ( children.get(child.getId()) != child ) {
       // i don't own you
@@ -166,7 +208,8 @@ class Widget {
       int removeId = child.getId();
       children.remove(removeId);
       for ( int i = removeId; i < children.size(); i++ ) {
-        children.get(i).setId(i);
+        Widget widget = (Widget) children.get(i);
+        widget.setId(i);
       }
       child.removeParent();
       return true;
@@ -174,19 +217,54 @@ class Widget {
   }
 
   boolean isTouching(int mouseX, int mouseY) {
-    if ( mouseX>x && mouseX < x+width
-      && mouseY >y && mouseY <y+height )
+    if ( mouseX>effectiveX && mouseX < effectiveX+width
+      && mouseY >effectiveY && mouseY <effectiveY+height )
       return true;
     return false;
   }
 
-  void onHover() {
+  void mouseTouching() {
+    borderColor = selectedBorderColor;
+    checkCollisions(mouseX, mouseY);
+  }
+
+  void mousePressed(int mouseX, int mouseY) {
+    onClick();
+    for ( int i = 0; i < getChildrenLength(); i++ ) {
+      Widget widget = (Widget) getChild(i);
+      if ( widget.isTouching(mouseX, mouseY) ) {
+        widget.mousePressed(mouseX, mouseY);
+      }
+    }
   }
 
   void onClick() {
+    // boring
   }
 
-  void onDrag() {
+  void mouseDragged(int mouseX, int mouseY, int pmouseX, int pmouseY) {
+    onDrag(mouseX, mouseY, pmouseX, pmouseY);
+    for ( int i = 0; i < getChildrenLength(); i++ ) {
+      Widget widget = (Widget) getChild(i);
+      if ( widget.isTouching(mouseX, mouseY) ) {
+        widget.mouseDragged(mouseX, mouseY, pmouseX, pmouseY);
+      }
+    }
+  }
+
+  void onDrag(int mouseX, int mouseY, int pmouseX, int pmouseY) {
+    // boring
+  }
+
+  void mouseReleased() {
+    onMouseReleased();
+    for ( int i = 0; i < getChildrenLength(); i++ ) {
+      Widget widget = (Widget) getChild(i);
+      widget.mouseReleased();
+    }
+  }
+
+  void onMouseReleased() {
   }
 
   void draw() {
@@ -194,8 +272,10 @@ class Widget {
     pushMatrix();
     translate(effectiveX+width/2, effectiveY+height/2);
     rotate(rotation);
+    stroke(borderColor);
     rect(-width/2, -height/2, width, height);
     popMatrix();
+    borderColor = defaultBorderColor;
     drawChildren();
   }
 
@@ -204,5 +284,22 @@ class Widget {
       Widget widget = (Widget) children.get(i);
       widget.draw();
     }
+  }
+
+  void checkCollisions(int mouseX, int mouseY) {
+    for ( int i = 0; i < getChildrenLength(); i++ ) {
+      Widget widget = (Widget) getChild(i);
+      if ( widget.isTouching(mouseX, mouseY) ) {
+        widget.mouseTouching();
+      }
+    }
+  }
+
+  void setEvent(int event) {
+    this.event = event;
+  }
+
+  int getEvent() {
+    return event;
   }
 }
