@@ -9,7 +9,7 @@ void settings() {
 void setup() {
   
   dataFile = new DataFile(dataPath("flights.db"));
-  println(dataFile.getTotalDiverted());
+  println(dataFile.getTotal());
   
   
   screen = new DebugScreen();
