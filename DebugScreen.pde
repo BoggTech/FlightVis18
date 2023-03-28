@@ -14,6 +14,7 @@ class DebugScreen extends Screen {
 
     float[] data = {0, 100};
     String[] labels = {"one", "two"};
+    color[] colors = {color(255, 8, 2), color(47, 28, 94)};
 
     // button
     button = new Button(10, 10, 20 , 20);
@@ -28,7 +29,7 @@ class DebugScreen extends Screen {
     
     
 
-    pieChart = new PieChart(data, labels, 200, 150, 150);
+    pieChart = new PieChart(data, labels, colors, 200, 150, 150);
     slider = new Slider(150, 300, 300, 50);
     slider2 = new Slider(0, 360, 600, 50);
     
