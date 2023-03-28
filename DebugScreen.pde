@@ -48,8 +48,7 @@ class DebugScreen extends Screen {
     text("succeeded: " + pieChart.data[0] + "\nfailed: " + pieChart.data[1], getX()+300, getY()+50);
     pieChart.data[0] = 100 * slider.getProgress();
     pieChart.data[1] = 100 - (100 * slider.getProgress());
-     pieChart.setup();
-    super.draw();
+    pieChart.setup();
 
     // framerate
     fill(0);
