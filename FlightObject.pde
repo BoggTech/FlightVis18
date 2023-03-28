@@ -67,7 +67,7 @@ class FlightObject {
   }
   
    String getOriginState() {
-    return originCity;
+    return originState;
   }
   
   String getDest() {
@@ -86,7 +86,7 @@ class FlightObject {
     return IATACode;
   }
   
-  Double getflightNumber() {
+  Double getFlightNumber() {
     return flightNumber;
   }
   

@@ -1,8 +1,9 @@
 import java.io.FileReader;
 import java.util.Scanner;
+
+ ArrayList<FlightObject> flightObjects = new ArrayList<>();
 class DataReader {
   String fileAddress = "flights2k.csv";
-  ArrayList<FlightObject> flightObjects = new ArrayList<>();
 
   DataReader() {
     read_in_the_file();

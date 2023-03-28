@@ -23,9 +23,9 @@ class DebugScreen extends Screen {
     String[] labels = {"one", "two"};
 
     // button
-    button = new Button(560, 10, 20, 20);
+    button = new Button(10, 10, 20 , 20);
     button.setEvent(GLOBAL_EVENT_RIGHT);
-    button2 = new Button(10, 10, 20, 20);
+    button2 = new Button(520, 10, 20, 20);
     button2.setEvent(GLOBAL_EVENT_LEFT);
     button3 = new Button(10, 40, 20, 20);
     button3.setEvent(1);
@@ -48,7 +48,7 @@ class DebugScreen extends Screen {
     screen.checkCollisions(mouseX, mouseY);
     pieChart.data[0] = 100 * slider.getProgress();
     pieChart.data[1] = 100 - (100 * slider.getProgress());
-    pieChart.setup();
+     pieChart.setup();
     super.draw();
 
     // framerate

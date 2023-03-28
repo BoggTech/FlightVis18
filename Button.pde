@@ -19,7 +19,7 @@ class Button extends Widget {
     super(x, y, width, height, widgetColor, parent);
   }
   
-  void onClick() {
+  /*void onClick() {
     setColor(color(random(0,255)));
-  }
+  }*/
 }
