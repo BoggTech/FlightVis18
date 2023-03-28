@@ -2,9 +2,8 @@
 Screen screen;
 SearchBar search;
 DataReader data;
+String dataAsString = "";
 Boolean searchOn = false;
-int heightOFWid ;
-int lengthOfWid;
 ArrayList<FlightObject> modifiedObjects = new ArrayList<>();
 
 void settings() {
@@ -12,7 +11,6 @@ void settings() {
 }
 
 void setup() {
-  //flightObject = new FlightObject();
   screen = new SearchScreen();
   search = new SearchBar();
   data = new DataReader();
@@ -33,15 +31,12 @@ void draw() {
     fill(255);
     text(search.textValue, 155, 50);
     search.draw();
-    for(int i =0; i < modifiedObjects.size(); i++){
-      int flightsNo =  (int) Math.round(modifiedObjects.get(i).getFlightNumber());
-      fill(255);
-      text(flightsNo, 200, 200);
-    }
   }
   else{
     fill(255);
     text("Search ", 155, 50);
+    textSize(17);
+    text(dataAsString , 155, 100);
   }
   
 }
@@ -58,34 +53,47 @@ void mousePressed() {
     searchOn = true;
     break;
   case SEARCH_EVENT_2:
-    print(search.textValue);
     searchOn = false;
     break;
   case SEARCH_EVENT_3:
-    //print(modifiedObject);
+   dataAsString = "";
+   for(int i = 0; i < flightObjects.size(); i++){
+     
+      String flightDate1 = flightObjects.get(i).getFlightDate();
+      String[] flightDate2 = flightDate1.split("/");
+      String flightDate = flightDate2[1];
+      String word = search.textValue;
+      
+      if(flightDate.equalsIgnoreCase(word)){
+        dataAsString = dataAsString +("Flight Number : " + flightObjects.get(i).getFlightNumber() + ", " + flightObjects.get(i).getFlightDate()  + " - " + flightObjects.get(i).getDepTime() + "\n");
+      }
+      
+    }
     searchOn = false;
     break;
   case SEARCH_EVENT_4:
+    dataAsString = "";
     for(int i = 0; i < flightObjects.size(); i++){
+      
       String flightOrigin = flightObjects.get(i).getOriginState();
       String word = search.textValue;
       
       if(flightOrigin.equalsIgnoreCase(word)){
-        modifiedObjects.add(flightObjects.get(i));
-        //print(flightObjects.get(i).getOriginCity());
+        dataAsString = dataAsString +("Flight Number : " + flightObjects.get(i).getFlightNumber() + ", " + flightObjects.get(i).getOriginCity()  + " - " + flightObjects.get(i).getDestCity()+ "\n");
       }
       
     }
     searchOn = false;
     break;
   case SEARCH_EVENT_5:
+   dataAsString = "";
    for(int i = 0; i < flightObjects.size(); i++){
-      String flightOrigin = flightObjects.get(i).getDestState();
+     
+      String flightDest = flightObjects.get(i).getDestState();
       String word = search.textValue;
       
-      if(flightOrigin.equalsIgnoreCase(word)){
-        modifiedObjects.add(flightObjects.get(i));
-        //print(flightObjects.get(i).getDestCity());
+      if(flightDest.equalsIgnoreCase(word)){
+        dataAsString = dataAsString +("Flight Number : " + flightObjects.get(i).getFlightNumber() + ", " + flightObjects.get(i).getOriginCity()  + " - " + flightObjects.get(i).getDestCity()+ "\n");
       }
       
     }
@@ -93,11 +101,31 @@ void mousePressed() {
     searchOn = false;
     break;
   case SEARCH_EVENT_6:
-    
+   dataAsString = "";
+   for(int i = 0; i < flightObjects.size(); i++){
+      
+      String flightArrTime = String.valueOf(flightObjects.get(i).getArrTime());
+      String word = search.textValue;
+      
+      if(flightArrTime.equalsIgnoreCase(word)){
+        dataAsString = dataAsString +("Flight Number : " + flightObjects.get(i).getFlightNumber() + ", " + flightObjects.get(i).getArrTime()  + " - " + flightObjects.get(i).getDepTime()+ "\n");
+      }
+      
+    }
     searchOn = false;
     break;
   case SEARCH_EVENT_7:
-    
+     dataAsString = "";
+     for(int i = 0; i < flightObjects.size(); i++){
+      
+      String flightDepTime = String.valueOf(flightObjects.get(i).getDepTime());
+      String word = search.textValue;
+      
+      if(flightDepTime.equalsIgnoreCase(word)){
+        dataAsString = dataAsString +("Flight Number : " + flightObjects.get(i).getFlightNumber() + ", " + flightObjects.get(i).getArrTime()  + " - " + flightObjects.get(i).getDepTime()+ "\n");
+      }
+      
+    }
     searchOn = false;
     break;
   case GLOBAL_EVENT_NULL:
