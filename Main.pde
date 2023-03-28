@@ -1,11 +1,17 @@
 Screen screen, screen2, activeScreen;
 boolean transition = false;
+DataFile dataFile;
 
 void settings() {
   size(SCREENX, SCREENY);
 }
 
 void setup() {
+  
+  dataFile = new DataFile(dataPath("flights.db"));
+  println(dataFile.getTotal());
+  
+  
   screen = new DebugScreen();
   screen2 = new DebugScreen2();
   activeScreen = screen;
