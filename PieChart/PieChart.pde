@@ -7,14 +7,17 @@ public class pieChart {
   private int diameter;
   float[] data;
   String[] labels;
+  color[]colors;
   private float sum;
 
-  pieChart(float[]data, String[] labels, int diameter, int ypos, int xpos) {
+  pieChart(float[]data, String[] labels, color[] colors,
+    int diameter, int ypos, int xpos) {
     this.xpos=xpos;
     this.ypos=ypos;
     this.diameter=diameter;
     this.data=data;
     this.labels=labels;
+    this.colors = colors;
     sum=0;
   }
 
@@ -34,8 +37,7 @@ public class pieChart {
   void draw() {
     float lastAngle=0;
     for (int i=0; i<data.length; i++) {
-      float colour = map(i, 0, data.length, 200, 255);
-      fill(colour);
+      fill(colors[i]);
       arc(xpos/2, ypos/2, diameter, diameter, lastAngle,
         lastAngle+radians(data[i]*360/sum));
       lastAngle+=radians(data[i]*360/sum);
