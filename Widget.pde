@@ -299,7 +299,17 @@ class Widget {
     this.event = event;
   }
 
-  int getEvent() {
-    return event;
+  int getEvent(int mouseX, int mouseY) {
+    for ( int i = 0; i < getChildrenLength(); i++ ) {
+      Widget child = (Widget) getChild(i);
+      if ( child.isTouching(mouseX, mouseY) ) {
+        int event = child.getEvent();
+        if ( handleEvent(event) ) {
+          return event;
+        }
+      }
+      return this.getEvent();
+    }
+    return GLOBAL_EVENT_NULL;
   }
 }
