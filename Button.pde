@@ -20,6 +20,6 @@ class Button extends Widget {
   }
   
   void onClick() {
-    setColor(color(random(0,255)));
+    //setColor(color(random(0,255)));
   }
 }
