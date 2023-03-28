@@ -1,3 +1,8 @@
+// DEBUG SCREENS
+// Moving these into one file, its getting very cramped
+// Nothing interesting, just a playground for testing widgets.
+
+// DEBUG SCREEN 1
 class DebugScreen extends Screen {
   final int EVENT_BUTTON = 1;
   // quick debug screen to make an example on how to make new ones
@@ -69,5 +74,21 @@ class DebugScreen extends Screen {
       // return true on global events; "everything else"
       return true;
     }
+  }
+}
+
+// DEBUG SCREEN 2
+class DebugScreen2 extends Screen {
+  Button button;
+  DebugScreen2() {
+    super();
+    button = new Button(10, 110, 30, 30);
+    button.setEvent(GLOBAL_EVENT_DEBUG_1);
+    
+    addWidget(button);
+  }
+  
+  boolean handleEvent(int event) {
+    return true;
   }
 }
