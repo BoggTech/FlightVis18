@@ -1,28 +1,48 @@
-final int SCREENX = 600;
-final int SCREENY = 600;
-
-Screen screen;
-Widget parent;
-Widget widget2;
+Screen screen, screen2, screen3, activeScreen;
+DataFile dataFile;
 
 void settings() {
   size(SCREENX, SCREENY);
 }
 
 void setup() {
-  screen = new Screen();
-  
-  parent = new Widget(SCREENX/2, SCREENY/2, 50, 50);
-  widget2 = new Widget(10, 10, parent.getWidth()-20, parent.getHeight()-20, parent); // technically you don't even need to assign this to a var
-  
-  screen.addWidget(parent);
+  dataFile = new DataFile(dataPath("flights.db"));
+  screen = new DebugScreen();
+  screen2 = new DebugScreen2();
+  screen3 = new SearchScreen();
+  activeScreen = screen;
 }
 
 void draw() {
-  screen.checkCollisions(mouseX, mouseY);
-  screen.draw();
+  background(100);
+  activeScreen.checkCollisions(mouseX, mouseY);
+  activeScreen.draw();
 }
 
 void mousePressed() {
-  screen.mousePressed(mouseX, mouseY);
+  // for "global" events  not sure if this'll be needed (beyond screen transitions maybe?
+  // global events are always negative; 0 is "null event"
+  activeScreen.mousePressed(mouseX, mouseY);
+  int event = activeScreen.getEvent(mouseX, mouseY);
+  switch( event ) {
+  case GLOBAL_EVENT_RIGHT:
+    // just a test; shifts it forward to show the button works
+    activeScreen.setX(screen.getX()+50);
+    break;
+  case GLOBAL_EVENT_LEFT:
+    activeScreen.setX(screen.getX()-50);
+    break;
+  case GLOBAL_EVENT_DEBUG_1:
+    activeScreen = screen;
+    break;
+  case GLOBAL_EVENT_DEBUG_2:
+    activeScreen = screen2;
+    break;
+  case GLOBAL_EVENT_NULL:
+    break;
+  }
+}
+
+void mouseDragged() {
+  activeScreen.mouseDragged(mouseX, mouseY, pmouseX, pmouseY);
 }
