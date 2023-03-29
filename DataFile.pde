@@ -1,4 +1,5 @@
 import java.sql.*;
+// for specifically flightdata
 // TODO: more error handling
 
 class DataFile {
@@ -33,7 +34,7 @@ class DataFile {
   int getTotalCancelled() {
     return getEqualsCount(CANCELLED, "1.00");
   }
-  
+
   int getTotalDiverted() {
     return getEqualsCount(DIVERTED, "1.00");
   }
@@ -49,7 +50,7 @@ class DataFile {
       return -1;
     }
   }
-  
+
   private void handleSQLException(SQLException e) {
     System.err.println("Something went wrong. " + e.getMessage());
   }
