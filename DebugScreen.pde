@@ -1,3 +1,8 @@
+// DEBUG SCREENS
+// Moving these into one file, its getting very cramped
+// Nothing interesting, just a playground for testing widgets.
+
+// DEBUG SCREEN 1
 class DebugScreen extends Screen {
   final int EVENT_BUTTON = 1;
   // quick debug screen to make an example on how to make new ones
@@ -14,11 +19,12 @@ class DebugScreen extends Screen {
 
     float[] data = {0, 100};
     String[] labels = {"one", "two"};
+    color[] colors = {color(255, 8, 2), color(47, 28, 94)};
 
     // button
-    button = new Button(560, 10, 20, 20);
+    button = new Button(10, 10, 20 , 20);
     button.setEvent(GLOBAL_EVENT_RIGHT);
-    button2 = new Button(10, 10, 20, 20);
+    button2 = new Button(520, 10, 20, 20);
     button2.setEvent(GLOBAL_EVENT_LEFT);
     button3 = new Button(10, 40, 20, 20);
     button3.setEvent(1);
@@ -28,7 +34,7 @@ class DebugScreen extends Screen {
     
     
 
-    pieChart = new PieChart(data, labels, 200, 150, 150);
+    pieChart = new PieChart(data, labels, colors, 200, 150, 150);
     slider = new Slider(150, 300, 300, 50);
     slider2 = new Slider(0, 360, 600, 50);
     
@@ -68,5 +74,21 @@ class DebugScreen extends Screen {
       // return true on global events; "everything else"
       return true;
     }
+  }
+}
+
+// DEBUG SCREEN 2
+class DebugScreen2 extends Screen {
+  Button button;
+  DebugScreen2() {
+    super();
+    button = new Button(10, 110, 30, 30);
+    button.setEvent(GLOBAL_EVENT_DEBUG_1);
+    
+    addWidget(button);
+  }
+  
+  boolean handleEvent(int event) {
+    return true;
   }
 }
