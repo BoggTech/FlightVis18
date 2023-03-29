@@ -5,16 +5,21 @@
 // DEBUG SCREEN 1
 class DebugScreen extends Screen {
   final int EVENT_BUTTON = 1;
+  TextWidget pieChartText, fpsText;
+  
   // quick debug screen to make an example on how to make new ones
   Button button, button2, button3, button4;
   PieChart pieChart;
-  Slider slider;
-  Slider slider2;
+  Slider slider, slider2;
   double actualFrameRate;
 
   DebugScreen() {
     // call the super constructor; sets up basic screen stuff.
     super();
+    
+    pieChartText = new TextWidget("AgencyFB-Bold", "", 32, 300, 50, 400, 300);
+    fpsText = new TextWidget("AgencyFB-Bold", "-1.0", 32, 5, 560, 64, 200);
+    fpsText.setDrawBackground(true);
 
     float[] data = {0, 100};
     String[] labels = {"one", "two"};
@@ -31,8 +36,6 @@ class DebugScreen extends Screen {
     button4 = new Button(10, 70, 30, 30);
     button4.setEvent(GLOBAL_EVENT_DEBUG_2);
 
-
-
     pieChart = new PieChart(data, labels, colors, 200, 150, 150);
     slider = new Slider(150, 300, 300, 50);
     slider2 = new Slider(0, 360, 600, 50);
@@ -45,22 +48,20 @@ class DebugScreen extends Screen {
     addWidget(button2);
     addWidget(button3);
     addWidget(button4);
+    addWidget(pieChartText);
+    addWidget(fpsText);
   }
 
   void draw() {
-    fill(255);
-    textSize(32);
-    text("succeeded: " + pieChart.data[0] + "\nfailed: " + pieChart.data[1], getX()+300, getY()+50);
+    pieChartText.setLabel("succeeded: " + pieChart.data[0] + "\nfailed: " + pieChart.data[1]);
     pieChart.data[0] = 100 * slider.getProgress();
     pieChart.data[1] = 100 - (100 * slider.getProgress());
     pieChart.setup();
-
-    // framerate
     fill(0);
     if ( frameCount % 60 == 0 ) {
       actualFrameRate = round(frameRate);
     }
-    text("" + actualFrameRate, getX(), getY() + 600);
+    fpsText.setLabel("" + actualFrameRate);
     super.draw();
   }
 
@@ -76,9 +77,12 @@ class DebugScreen extends Screen {
   }
 }
 
+//-----------------------------------------------------------------------------------//
+
 // DEBUG SCREEN 2
 class DebugScreen2 extends Screen {
   Button button, button2;
+  TextWidget pieChartText;
   PieChart pieChart;
   final int EVENT_TOGGLEDATA = 1;
   String label = "Cancelled";
@@ -105,16 +109,17 @@ class DebugScreen2 extends Screen {
     color[] colors = {color(255, 0, 0), color(0, 255, 0)};
 
     pieChart = new PieChart(data, labels, colors, 200, 150, 150);
+    
+    pieChartText = new TextWidget("AgencyFB-Bold", "", 32, 300, 50, 400, 300);
+    pieChartText.setLabel(label + ": " + round(pieChart.data[0]) + "\nOther: " + round(pieChart.data[1]));
 
     addWidget(button);
     addWidget(button2);
     addWidget(pieChart);
+    addWidget(pieChartText);
   }
 
   void draw() {
-    fill(255);
-    textSize(32);
-    text(label + ": " + round(pieChart.data[0]) + "\nOther: " + round(pieChart.data[1]), getX()+300, getY()+50);
     super.draw();
   }
 
@@ -130,6 +135,7 @@ class DebugScreen2 extends Screen {
         pieChart.data[1] = totalFlights - cancelledFlights;
         label = "Cancelled";
       }
+      pieChartText.setLabel(label + ": " + round(pieChart.data[0]) + "\nOther: " + round(pieChart.data[1]));
       pieChart.setup();
       return false;
     default:
