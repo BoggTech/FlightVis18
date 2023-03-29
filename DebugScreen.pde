@@ -114,7 +114,7 @@ class DebugScreen2 extends Screen {
   void draw() {
     fill(255);
     textSize(32);
-    text("Other: " + round(pieChart.data[0]) + "\n" + label + ": " + round(pieChart.data[1]), getX()+300, getY()+50);
+    text(label + ": " + round(pieChart.data[0]) + "\nOther: " + round(pieChart.data[1]), getX()+300, getY()+50);
     super.draw();
   }
 

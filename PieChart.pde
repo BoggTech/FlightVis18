@@ -36,7 +36,7 @@ public class PieChart extends Widget {
     float lastAngle=0;
     for (int i=0; i<data.length; i++) {
       fill(colors[i]);
-      arc(getEffectiveX(), getEffectiveY(), diameter, diameter, lastAngle, lastAngle+radians(data[i]*360/sum));
+      arc(getEffectiveX(), getEffectiveY(), diameter, diameter, lastAngle-45, lastAngle+radians(data[i]*360/sum)-45);
       lastAngle+=radians(data[i]*360/sum);
     }
   }
