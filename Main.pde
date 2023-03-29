@@ -1,13 +1,15 @@
-Screen screen, screen2, activeScreen;
-boolean transition = false;
+Screen screen, screen2, screen3, activeScreen;
+DataFile dataFile;
 
 void settings() {
   size(SCREENX, SCREENY);
 }
 
 void setup() {
+  dataFile = new DataFile(dataPath("flights.db"));
   screen = new DebugScreen();
   screen2 = new DebugScreen2();
+  screen3 = new SearchScreen();
   activeScreen = screen;
 }
 
