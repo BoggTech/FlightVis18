@@ -22,7 +22,7 @@ class TextWidget extends Widget {
     drawBackground = false;
 
     addChild(new Widget(0, 0, getWidth(), getHeight()));
-    getBackground().setSelectedBorderColor(color(255));
+    getBackground().setSelectedBorderColor(color(0));
   }
 
   void setDrawBackground(boolean status) {

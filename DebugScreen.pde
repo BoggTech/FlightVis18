@@ -28,13 +28,19 @@ class DebugScreen extends Screen {
     // button
     button = new Button(10, 10, 20, 20);
     button.setEvent(GLOBAL_EVENT_RIGHT);
+    button.setLabel(" R");
+    
     button2 = new Button(520, 10, 20, 20);
     button2.setEvent(GLOBAL_EVENT_LEFT);
+    button2.setLabel(" L");
+    
     button3 = new Button(10, 40, 20, 20);
     button3.setEvent(1);
+    button3.setLabel(" P");
 
     button4 = new Button(10, 70, 30, 30);
     button4.setEvent(GLOBAL_EVENT_DEBUG_2);
+    button4.setLabel(" >");
 
     pieChart = new PieChart(data, labels, colors, 200, 150, 150);
     slider = new Slider(150, 300, 300, 50);
@@ -95,9 +101,11 @@ class DebugScreen2 extends Screen {
     super();
     button = new Button(10, 70, 30, 30);
     button.setEvent(GLOBAL_EVENT_DEBUG_1);
+    button.setLabel(" <");
 
     button2 = new Button(10, 110, 30, 30);
     button2.setEvent(EVENT_TOGGLEDATA);
+    button2.setLabel(" o");
     button2.setColor(color(85, 23, 95));
 
     totalFlights = dataFile.getTotal();
