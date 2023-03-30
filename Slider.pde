@@ -1,6 +1,7 @@
 class Slider extends Widget {
   private float progress;
   private final float margin = 5;
+  private boolean pressed;
 
   Slider() {
     this(0, 0, 0, 0, color(0), null);
@@ -23,6 +24,7 @@ class Slider extends Widget {
     progress = 0;
     addChild(new Widget(margin, margin, height-10, height-10, widgetColor, this));
     setSelectedBorderColor(color(0));
+    pressed = false;
   }
 
   float getProgress() {
@@ -39,8 +41,8 @@ class Slider extends Widget {
     int distance = mouseX - int(getEffectiveX()); // relative X position of mouse
     float leftBound = margin+dragger.getWidth()/2; // max x positions on either side
     float rightBound = getWidth()-leftBound;
-    
-    if ( dragger.isTouching(mouseX, mouseY) || dragger.isTouching(pmouseX, pmouseY) ) {
+
+    if ( pressed ) {
       if ( distance < leftBound ) {
         dragger.setX(leftBound - draggerWidth/2);
       } else if ( distance > rightBound ) {
@@ -53,6 +55,26 @@ class Slider extends Widget {
     }
   }
 
+  void onClick(int mouseX, int mouseY) {
+    Widget dragger = getDragger();
+    if ( dragger.isTouching(mouseX, mouseY) ) {
+      pressed = true;
+    }
+  }
+
+  void onMouseReleased(int mouseX, int mouseY) {
+    pressed = false;
+  }
+  
+  void draw() {
+    Widget dragger = getDragger();
+    if ( pressed ) {
+      dragger.setBorderColor(dragger.getSelectedBorderColor());
+    }
+    super.draw();
+  }
+  
+  
   void setProgress(float progress) {
     if ( progress >= 0 && progress <= 1 ) {
       this.progress = progress;

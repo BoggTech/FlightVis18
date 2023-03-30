@@ -25,7 +25,7 @@ void draw() {
     loadCounter++;
     textLeading(30);
     text("Loading " + currentJob + "..."
-      + "\n" + loadCounter/100, SCREENX/2, SCREENY/2+96);
+      + "\n" + round(loadCounter/60), SCREENX/2, SCREENY/2+96);
     pushMatrix();
     translate(SCREENX/2, SCREENY/2);
     rotate((((float) frameCount)/15));
@@ -72,6 +72,10 @@ void mouseDragged() {
 
 void keyPressed() {
   activeScreen.keyPressed(key);
+}
+
+void mouseReleased() {
+  activeScreen.mouseReleased(mouseX, mouseY);
 }
 
 void setUpScreens() {
