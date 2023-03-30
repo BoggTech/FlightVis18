@@ -229,16 +229,14 @@ class Widget {
   }
 
   void mousePressed(int mouseX, int mouseY) {
-    onClick();
+    onClick(mouseX, mouseY);
     for ( int i = 0; i < getChildrenLength(); i++ ) {
       Widget widget = (Widget) getChild(i);
-      if ( widget.isTouching(mouseX, mouseY) ) {
-        widget.mousePressed(mouseX, mouseY);
-      }
+      widget.mousePressed(mouseX, mouseY);
     }
   }
 
-  void onClick() {
+  void onClick(int mouseX, int mouseY) {
     // boring
   }
 
@@ -265,6 +263,17 @@ class Widget {
   }
 
   void onMouseReleased() {
+  }
+
+  void keyPressed(char keyValue) {
+    onKeyPressed(keyValue);
+    for ( int i = 0; i < getChildrenLength(); i++ ) {
+      Widget widget = (Widget) getChild(i);
+      widget.keyPressed(keyValue);
+    }
+  }
+
+  void onKeyPressed(char keyValue) {
   }
 
   void draw() {

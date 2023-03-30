@@ -9,6 +9,7 @@ class DebugScreen extends Screen {
   
   // quick debug screen to make an example on how to make new ones
   Button button, button2, button3, button4;
+  CheckBox checkBox;
   PieChart pieChart;
   Slider slider, slider2;
   double actualFrameRate;
@@ -16,6 +17,7 @@ class DebugScreen extends Screen {
   DebugScreen() {
     // call the super constructor; sets up basic screen stuff.
     super();
+    //dataFile.testFunction();
     
     pieChartText = new TextWidget("AgencyFB-Bold", "", 32, 300, 50, 400, 300);
     fpsText = new TextWidget("AgencyFB-Bold", "-1.0", 32, 5, 560, 64, 200);
@@ -39,8 +41,10 @@ class DebugScreen extends Screen {
     button3.setLabel(" P");
 
     button4 = new Button(10, 70, 30, 30);
-    button4.setEvent(GLOBAL_EVENT_DEBUG_2);
+    button4.setEvent(GLOBAL_EVENT_DEBUG_3);
     button4.setLabel(" >");
+    
+    checkBox = new CheckBox(10, 300, 30, 30);
 
     pieChart = new PieChart(data, labels, colors, 200, 150, 150);
     slider = new Slider(150, 300, 300, 50);
@@ -56,6 +60,7 @@ class DebugScreen extends Screen {
     addWidget(button4);
     addWidget(pieChartText);
     addWidget(fpsText);
+    addWidget(checkBox);
   }
 
   void draw() {
@@ -88,7 +93,7 @@ class DebugScreen extends Screen {
 // DEBUG SCREEN 2
 class DebugScreen2 extends Screen {
   Button button, button2;
-  TextWidget pieChartText;
+  TextWidget pieChartText, averageDistance;
   PieChart pieChart;
   final int EVENT_TOGGLEDATA = 1;
   String label = "Cancelled";
@@ -120,11 +125,16 @@ class DebugScreen2 extends Screen {
     
     pieChartText = new TextWidget("AgencyFB-Bold", "", 32, 300, 50, 400, 300);
     pieChartText.setLabel(label + ": " + round(pieChart.data[0]) + "\nOther: " + round(pieChart.data[1]));
+    
+    averageDistance = new TextWidget("AgencyFB-Bold", "", 32, 50, 300, 500, 300);
+    averageDistance.setLabel("Average Distance: " + dataFile.getAverageDistance() + " km" 
+    + "\nTotal Flights: " + totalFlights);
 
     addWidget(button);
     addWidget(button2);
     addWidget(pieChart);
     addWidget(pieChartText);
+    addWidget(averageDistance);
   }
 
   void draw() {
@@ -149,5 +159,13 @@ class DebugScreen2 extends Screen {
     default:
       return true;
     }
+  }
+}
+
+class SearchScreen extends Screen {
+  SearchBar searchBar = new SearchBar(0, 0, SCREENX, 100);
+  SearchScreen() {
+    addWidget(searchBar);
+    
   }
 }

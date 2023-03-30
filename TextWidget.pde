@@ -5,6 +5,10 @@ class TextWidget extends Widget {
   String text;
   boolean drawBackground;
 
+  TextWidget(int x, int y, int width, int height) {
+    this("", "", 32, x, y, width, height, color(0));
+  }
+  
   TextWidget(String fontName, String text, int fontSize, float x, float y, float xSize, float ySize) {
     this(fontName, text, fontSize, x, y, xSize, ySize, color(0));
   }
@@ -31,6 +35,10 @@ class TextWidget extends Widget {
 
   void setLabel(String text) {
     this.text = text;
+  }
+  
+  String getLabel() {
+    return text;
   }
 
   Widget getBackground() {
