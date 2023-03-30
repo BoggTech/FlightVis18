@@ -2,12 +2,14 @@ Screen screen, screen2, screen3, activeScreen;
 DataFile dataFile;
 boolean ready = false;
 PShape gear;
+String currentJob;
 
 void settings() {
   size(SCREENX, SCREENY);
 }
 
 void setup() {
+  currentJob = "";
   gear = loadShape("gear.svg");
   thread("setUpScreens");
 }
@@ -15,12 +17,16 @@ void setup() {
 void draw() {
   if ( !ready ) {
     background(128);
-    pushMatrix();
     fill(0);
+    textSize(32);
+    textAlign(CENTER,CENTER);
+    text("Working on " + currentJob + "...", SCREENX/2, SCREENY/2+64);
+    pushMatrix();
     translate(SCREENX/2, SCREENY/2);
     rotate((((float) frameCount)/15));
     shape(gear, -50, -50, 100, 100);
     popMatrix();
+    textAlign(LEFT);
     return;
   }
   background(100);
@@ -64,10 +70,15 @@ void keyPressed() {
 }
 
 void setUpScreens() {
+  currentJob = "DataFile";
   dataFile = new DataFile(dataPath("flights.db"));
+  currentJob = "DebugScreen";
   screen = new DebugScreen();
+  currentJob = "DebugScreen2";
   screen2 = new DebugScreen2();
+  currentJob = "SearchScreen";
   screen3 = new SearchScreen();
+  currentJob = "nothing";
   activeScreen = screen;
   ready = true;
 }
