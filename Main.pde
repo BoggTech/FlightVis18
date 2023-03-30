@@ -38,6 +38,9 @@ void mousePressed() {
   case GLOBAL_EVENT_DEBUG_2:
     activeScreen = screen2;
     break;
+  case GLOBAL_EVENT_DEBUG_3:
+    activeScreen = screen3;
+    break;
   case GLOBAL_EVENT_NULL:
     break;
   }
@@ -45,4 +48,8 @@ void mousePressed() {
 
 void mouseDragged() {
   activeScreen.mouseDragged(mouseX, mouseY, pmouseX, pmouseY);
+}
+
+void keyPressed() {
+  activeScreen.keyPressed(key);
 }

@@ -39,11 +39,41 @@ class DataFile {
     return getEqualsCount(DIVERTED, "1.00");
   }
 
+  float getAverageDistance() {
+    return getAverage(DISTANCE);
+  }
+
+  void testFunction() {
+    try {
+      String sql = "SELECT * FROM flights WHERE ORIGIN = \"JFK\"";
+      ResultSet rs = s.executeQuery(sql);
+      while ( rs.next() ) {
+        println(rs.getString(ORIGIN_CITY));
+        println(rs.getString(DESTINATION_CITY));
+      }
+    }
+    catch ( SQLException e ) {
+      handleSQLException(e);
+    }
+  }
+
   private int getEqualsCount(String query, String equality) {
     try {
       String sql = "SELECT COUNT(" + query + ") AS total FROM flights WHERE " + query + "=\"" + equality + "\"";
       ResultSet rs = s.executeQuery(sql);
       return rs.getInt("total");
+    }
+    catch ( SQLException e ) {
+      handleSQLException(e);
+      return -1;
+    }
+  }
+
+  private float getAverage(String query) {
+    try {
+      String sql = "SELECT AVG(" + query + ") AS total FROM flights";
+      ResultSet rs = s.executeQuery(sql);
+      return rs.getFloat("total");
     }
     catch ( SQLException e ) {
       handleSQLException(e);

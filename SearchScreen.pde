@@ -1,4 +1,4 @@
-class SearchScreen extends Screen{
+/*class SearchScreen extends Screen{
   
   Button searchBar;
   Button enter;
@@ -45,4 +45,4 @@ class SearchScreen extends Screen{
   
  }
   
-}
+}*/
