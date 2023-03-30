@@ -1,16 +1,18 @@
-public class BarChart {
-  int[] data;
+class barChart {
+  float[] data;
   color[] colors;
-  int lengthOfLine;
-  int heightOfLine;
+  float lengthOfLine;
+  float heightOfLine;
   float gap;
-  int maxNumber;
+  float maxNumber;
   float lengthOfEachSquare;
   float xpos;
-  int ypos;
+  float ypos;
+  float temp;
+  float originalXpos;
 
-  int heightOfLine;
-  float gap) {
+  barChart(float[] data, color[] colors, float lengthOfLine,
+    float heightOfLine, float gap, float xpos, float ypos) {
     this.data=data;
     this.colors=colors;
     this.lengthOfLine = lengthOfLine;
@@ -21,8 +23,23 @@ public class BarChart {
   }
 
   void setup() {
-    int temp = gap*(data.length-1);
+    temp = gap*(data.length-1);
     temp=lengthOfLine-temp;
     lengthOfEachSquare = temp/data.length;
+    maxNumber=1;
+    for (int i=0; i<data.length; i++) {
+      if (data[i]>maxNumber) maxNumber=data[i];
+    }
+    originalXpos = xpos;
+  }
+
+  void draw() {
+    for (int i=0; i<data.length; i++) {
+      color colour = colors[i];
+      rect(xpos, ypos+maxNumber-(heightOfLine*(data[i]/maxNumber)), lengthOfEachSquare, heightOfLine*(data[i]/maxNumber));
+      fill(colour);
+      xpos=xpos+lengthOfEachSquare+gap;
+      if(i==data.length-1) xpos = originalXpos;
+    }
   }
 }
