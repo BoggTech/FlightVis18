@@ -8,7 +8,7 @@ class Button extends Widget {
   Button(float x, float y, float width, float height) {
     this(x, y, width, height, color(128), null);
   }
-
+  
   Button(float x, float y, float width, float height, Widget parent) {
     this(x, y, width, height, color(128), parent);
   }
@@ -58,7 +58,7 @@ class CheckBox extends Button {
     isChecked = false;
   }
   
-  void onClick(int mouseX, int mouseY) {
+  void onClick(int mouseX, int mouseY) {  
     if ( isTouching(mouseX, mouseY) ) {
       toggle();
     }

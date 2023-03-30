@@ -107,18 +107,6 @@ class Widget {
   void setBorderColor(color borderColor) {
     this.borderColor = borderColor;
   }
-  
-  color getDefaultBorderColor() {
-    return defaultBorderColor;
-  }
-  
-  color getSelectedBorderColor() {
-    return selectedBorderColor;
-  }
-  
-  color getBorderColor() {
-    return borderColor;
-  }
 
   Widget getParent() {
     return parent;
@@ -256,7 +244,9 @@ class Widget {
     onDrag(mouseX, mouseY, pmouseX, pmouseY);
     for ( int i = 0; i < getChildrenLength(); i++ ) {
       Widget widget = (Widget) getChild(i);
-      widget.mouseDragged(mouseX, mouseY, pmouseX, pmouseY);
+      if ( widget.isTouching(mouseX, mouseY) ) {
+        widget.mouseDragged(mouseX, mouseY, pmouseX, pmouseY);
+      }
     }
   }
 
@@ -264,15 +254,15 @@ class Widget {
     // boring
   }
 
-  void mouseReleased(int mouseX, int mouseY) {
-    onMouseReleased(mouseX, mouseY);
+  void mouseReleased() {
+    onMouseReleased();
     for ( int i = 0; i < getChildrenLength(); i++ ) {
       Widget widget = (Widget) getChild(i);
-      widget.mouseReleased(mouseX, mouseY);
+      widget.mouseReleased();
     }
   }
 
-  void onMouseReleased(int mouseX, int mouseY) {
+  void onMouseReleased() {
   }
 
   void keyPressed(char keyValue) {

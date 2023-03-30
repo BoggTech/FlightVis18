@@ -41,7 +41,7 @@ class DebugScreen extends Screen {
     button3.setLabel(" P");
 
     button4 = new Button(10, 70, 30, 30);
-    button4.setEvent(GLOBAL_EVENT_DEBUG_3);
+    button4.setEvent(GLOBAL_EVENT_DEBUG_2);
     button4.setLabel(" >");
     
     checkBox = new CheckBox(10, 300, 30, 30);
