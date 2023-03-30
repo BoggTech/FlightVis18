@@ -36,6 +36,10 @@ class TextWidget extends Widget {
   void setLabel(String text) {
     this.text = text;
   }
+  
+  String getLabel() {
+    return text;
+  }
 
   Widget getBackground() {
     Widget background = (Widget) getChild(0);

@@ -1,19 +1,28 @@
 Screen screen, screen2, screen3, activeScreen;
 DataFile dataFile;
+boolean ready = false;
+PShape gear;
 
 void settings() {
   size(SCREENX, SCREENY);
 }
 
 void setup() {
-  dataFile = new DataFile(dataPath("flights.db"));
-  screen = new DebugScreen();
-  screen2 = new DebugScreen2();
-  screen3 = new SearchScreen();
-  activeScreen = screen;
+  gear = loadShape("gear.svg");
+  thread("setUpScreens");
 }
 
 void draw() {
+  if ( !ready ) {
+    background(128);
+    pushMatrix();
+    fill(0);
+    translate(SCREENX/2, SCREENY/2);
+    rotate((((float) frameCount)/15));
+    shape(gear, -50, -50, 100, 100);
+    popMatrix();
+    return;
+  }
   background(100);
   activeScreen.checkCollisions(mouseX, mouseY);
   activeScreen.draw();
@@ -52,4 +61,13 @@ void mouseDragged() {
 
 void keyPressed() {
   activeScreen.keyPressed(key);
+}
+
+void setUpScreens() {
+  dataFile = new DataFile(dataPath("flights.db"));
+  screen = new DebugScreen();
+  screen2 = new DebugScreen2();
+  screen3 = new SearchScreen();
+  activeScreen = screen;
+  ready = true;
 }

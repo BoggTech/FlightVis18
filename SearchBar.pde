@@ -2,15 +2,6 @@ class SearchBar extends Widget {
 
   ArrayList<String> insideSearchBar = new ArrayList<String>();
   private int textLimit = 40;
-  boolean enterPressed = false;
-  public float currentValue;
-  public int lastLetterTyped;
-  public String textValue="";
-  public char keyInput;
-  public char currentKeyPress;
-  public boolean keyReleased;
-  public String letterAdd;
-  String stringReturn;
   boolean selected = false;
 
   SearchBar() {
@@ -35,7 +26,13 @@ class SearchBar extends Widget {
   }
 
   void draw() {
+    TextWidget label = getLabel();
+    String originalLabel = label.getLabel();
+    if ( frameCount % 80 < 40 && selected && insideSearchBar.size() < 40 ) {
+        label.setLabel(label.getLabel() + "|");
+      }
     super.draw();
+    label.setLabel(originalLabel);
   }
 
   TextWidget getLabel() {
@@ -47,9 +44,15 @@ class SearchBar extends Widget {
     if ( isTouching(mouseX, mouseY) ) {
       selected = true;
       setColor(255);
+      setSelectedBorderColor(0);
+      setDefaultBorderColor(255);
+      getLabel().setColor(0);
     } else {
       selected = false;
       setColor(0);
+      getLabel().setColor(255);
+      setSelectedBorderColor(255);
+      setDefaultBorderColor(0);
     }
   }
 
@@ -60,7 +63,9 @@ class SearchBar extends Widget {
           insideSearchBar.remove(insideSearchBar.size()-1);
         }
       } else {
-        if ( insideSearchBar.size() < textLimit )
+        if ( insideSearchBar.size() < textLimit
+          && (keyValue <= 'Z' && keyValue >= 'A'
+          || keyValue <= 'z' && keyValue >= 'a') )
           insideSearchBar.add(String.valueOf(keyValue));
       }
       String label = "";
@@ -71,32 +76,4 @@ class SearchBar extends Widget {
       text.setLabel(label);
     }
   }
-
-  /*void getUserInput() {
-   if (keyPressed!=true) {
-   keyReleased = true;
-   }
-   
-   //"Key!=CODED" ignores Caps key
-   if (keyPressed &&key!=CODED& keyReleased) {
-   
-   
-   currentKeyPress = key;
-   letterAdd=String.valueOf(currentKeyPress);
-   insideSearchBar.add(letterAdd);
-   println(insideSearchBar);
-   
-   
-   if (currentKeyPress == BACKSPACE) {
-   textValue = "";
-   insideSearchBar.clear();
-   } else if (currentKeyPress >= ' ') textValue += str(currentKeyPress);
-   if (textValue.length() > textLimit) textValue = "";
-   keyReleased = false;
-   }
-   
-   if (key==ENTER) {
-   enterPressed=true;
-   }
-   }*/
 }

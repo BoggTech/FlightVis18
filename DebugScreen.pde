@@ -9,6 +9,7 @@ class DebugScreen extends Screen {
   
   // quick debug screen to make an example on how to make new ones
   Button button, button2, button3, button4;
+  CheckBox checkBox;
   PieChart pieChart;
   Slider slider, slider2;
   double actualFrameRate;
@@ -42,6 +43,8 @@ class DebugScreen extends Screen {
     button4 = new Button(10, 70, 30, 30);
     button4.setEvent(GLOBAL_EVENT_DEBUG_3);
     button4.setLabel(" >");
+    
+    checkBox = new CheckBox(10, 300, 30, 30);
 
     pieChart = new PieChart(data, labels, colors, 200, 150, 150);
     slider = new Slider(150, 300, 300, 50);
@@ -57,6 +60,7 @@ class DebugScreen extends Screen {
     addWidget(button4);
     addWidget(pieChartText);
     addWidget(fpsText);
+    addWidget(checkBox);
   }
 
   void draw() {
