@@ -12,14 +12,6 @@ class MenuScreen extends Screen {
     super();
 
     String pcName = System.getProperty("user.name");
-    
-    
-    println(dataFile.getTotalCancelled());
-    println(dataFile.getTotalDiverted());
-    println(dataFile.countCancelledDestState("CA"));
-    println(dataFile.countDivertedDestState("CA"));
-    println(dataFile.countCancelledOriginState("CA"));
-    println(dataFile.countDivertedOriginState("CA"));
 
     totalFlights = dataFile.getTotal();
     String totalFlightsString = Integer.toString(totalFlights);
