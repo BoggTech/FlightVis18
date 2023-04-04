@@ -38,17 +38,17 @@ class DataFile {
   int getTotalDiverted() {
     return getEqualsCount(DIVERTED, "1.00");
   }
-  
+
   // return how many flights have this destination state
   int getTotalDestState(String state) {
     return getEqualsCount(DESTINATION_STATE_ABBREVIATION, state);
   }
-  
+
   // return how many flights have this origin state
   int getTotalOriginState(String state) {
     return getEqualsCount(ORIGIN_STATE_ABBREVIATION, state);
   }
-  
+
   // return how many cancelled flights with this destination state
   int countCancelledDestState(String state) {
     try {
@@ -75,8 +75,8 @@ class DataFile {
       return -1;
     }
   }
-  
-    int countCancelledOriginState(String state) {
+
+  int countCancelledOriginState(String state) {
     try {
       String sql = "SELECT COUNT(" + ORIGIN_STATE_ABBREVIATION + ")"
         + "AS total FROM flights WHERE " + CANCELLED + "=\"1.00\" AND " + ORIGIN_STATE_ABBREVIATION + " = \"" + state + "\"";
@@ -93,6 +93,34 @@ class DataFile {
     try {
       String sql = "SELECT COUNT(" + ORIGIN_STATE_ABBREVIATION + ")"
         + "AS total FROM flights WHERE " + DIVERTED + "=\"1.00\" AND " + ORIGIN_STATE_ABBREVIATION + " = \"" + state + "\"";
+      ResultSet rs = s.executeQuery(sql);
+      return rs.getInt("total");
+    }
+    catch ( SQLException e ) {
+      handleSQLException(e);
+      return -1;
+    }
+  }
+
+  int countCancelledState(String state) {
+    try {
+      String sql = "SELECT COUNT(" + ORIGIN_STATE_ABBREVIATION + ")"
+        + "AS total FROM flights WHERE " + CANCELLED + "=\"1.00\" AND (" + ORIGIN_STATE_ABBREVIATION + " = \"" + state + "\" OR " +
+        DESTINATION_STATE_ABBREVIATION + " = \"" + state + "\")";
+      ResultSet rs = s.executeQuery(sql);
+      return rs.getInt("total");
+    }
+    catch ( SQLException e ) {
+      handleSQLException(e);
+      return -1;
+    }
+  }
+
+  int countDivertedState(String state) {
+    try {
+      String sql = "SELECT COUNT(" + ORIGIN_STATE_ABBREVIATION + ")"
+        + "AS total FROM flights WHERE " + DIVERTED + "=\"1.00\" AND (" + ORIGIN_STATE_ABBREVIATION + " = \"" + state + "\" OR " +
+        DESTINATION_STATE_ABBREVIATION + " = \"" + state + "\")";
       ResultSet rs = s.executeQuery(sql);
       return rs.getInt("total");
     }
