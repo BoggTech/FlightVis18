@@ -4,13 +4,16 @@ class TextWidget extends Widget {
   PFont WidgetFont;
   String text;
   boolean drawBackground;
+  int align;
 
   TextWidget(int x, int y, int width, int height) {
     this("", "", 32, x, y, width, height, color(0));
+    setColor(TEXT_COLOR);
   }
   
   TextWidget(String fontName, String text, int fontSize, float x, float y, float xSize, float ySize) {
     this(fontName, text, fontSize, x, y, xSize, ySize, color(0));
+    setColor(TEXT_COLOR);
   }
 
   TextWidget(String fontName, String text, int fontSize, float x, float y, float xSize, float ySize, color textColor) {
@@ -24,6 +27,7 @@ class TextWidget extends Widget {
     setColor(textColor);
     WidgetFont = createFont(fontName, fontSize);
     drawBackground = false;
+    align = LEFT;
 
     addChild(new Widget(0, 0, getWidth(), getHeight()));
     getBackground().setSelectedBorderColor(color(0));
@@ -37,6 +41,16 @@ class TextWidget extends Widget {
     this.text = text;
   }
   
+  void setTextSize(int size) {
+    fontSize = size;
+    WidgetFont = createFont(fontName, fontSize);
+  }
+  
+  void setPosition(int x, int y) {
+    setX(x);
+    setY(y);
+  }
+  
   String getLabel() {
     return text;
   }
@@ -45,8 +59,13 @@ class TextWidget extends Widget {
     Widget background = (Widget) getChild(0);
     return background;
   }
+  
+  void setAlign(int align) {
+    this.align = align;
+  }
 
   void draw() {
+    textAlign(align, align);
     if ( drawBackground ) {
       getBackground().draw();
     }

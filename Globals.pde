@@ -3,16 +3,12 @@ final int SCREENY = 600;
 final int GLOBAL_EVENT_NULL = 0;
 final int GLOBAL_EVENT_RIGHT = -1;
 final int GLOBAL_EVENT_LEFT = -2;
-final int SEARCH_EVENT_1 = 1;
-final int SEARCH_EVENT_2 = 2;
-final int SEARCH_EVENT_3 = 3;
-final int SEARCH_EVENT_4 = 4;
-final int SEARCH_EVENT_5 = 5;
-final int SEARCH_EVENT_6 = 6;
-final int SEARCH_EVENT_7 = 7;
 final int GLOBAL_EVENT_DEBUG_1 = -3;
 final int GLOBAL_EVENT_DEBUG_2 = -4;
 final int GLOBAL_EVENT_DEBUG_3 = -5;
+final int GLOBAL_EVENT_MAP_SCREEN = -6;
+final int GLOBAL_EVENT_SEARCH_SCREEN = -7;
+
 
 final String FLIGHT_DATE = "FL_DATE";
 final String CARRIER = "MKT_CARRIER";
@@ -32,3 +28,7 @@ final String ARRIVAL = "ARR_TIME";
 final String CANCELLED = "CANCELLED";
 final String DIVERTED = "DIVERTED";
 final String DISTANCE = "DISTANCE";
+
+final color TEXT_COLOR = color(120, 47, 11);
+final color BG_COLOR = color(245, 130, 22);
+final color BUTTON_COLOR = color(240, 94, 22); 
