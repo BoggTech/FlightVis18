@@ -75,8 +75,10 @@ void mousePressed() {
     break;
   case GLOBAL_EVENT_MAP_SCREEN:
     activeScreen = mapScreen;
+    break;
   case GLOBAL_EVENT_SEARCH_SCREEN:
     activeScreen = searchScreen;
+    break;
   case GLOBAL_EVENT_NULL:
     break;
   }
