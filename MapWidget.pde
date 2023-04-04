@@ -5,6 +5,8 @@ class MapWidget extends Widget {
   StateWidget[] states;
   RShape map;
 
+  color selectedColor;
+  color defaultColor;
   MapWidget(int x, int y, int width, int height, String mapFile) {
     setX(x);
     setY(y);
@@ -16,10 +18,15 @@ class MapWidget extends Widget {
       "MN", "MS", "MO", "MT", "NE", "NV", "NH", "NJ", "NM", "NY", "NC", "ND", "OH", "OK", "OR", "PA", "RI", "SC", "SD", "TN", "TX", "UT", "VT", "VA", "WA",
       "WV", "WI", "WY"};
     stateAbbreviations = abbr;
+    
+    for ( int i = 0; i < stateAbbreviations.length; i++ ) {
+      String abbrev = stateAbbreviations[i];
+      addChild(new StateWidget(map.getChild(abbrev), abbrev));
+    }
   }
   
   void draw() {
-    
+    drawChildren();
   }
 }
 
@@ -31,6 +38,10 @@ class StateWidget extends Widget {
     this.abbreviation = abbreviation;
   }
   
+  void scale(float number) {
+    state.scale(number);
+  }
+  
   boolean isTouching(int mouseX, int mouseY) {
     if ( state.contains(mouseX, mouseY) ) {
       return true;
@@ -39,6 +50,9 @@ class StateWidget extends Widget {
   }
   
   void draw() {
-    
+    pushMatrix();
+    translate(getEffectiveX(), getEffectiveY());
+    state.draw();
+    popMatrix();
   }
 }

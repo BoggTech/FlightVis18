@@ -175,6 +175,7 @@ class Widget {
     this.widgetColor = widgetColor;
   }
 
+  // sets the parent of this widget to another; handles cleaning up
   void setParent(Widget parent) {
     if ( this.parent == parent || parent == this ) {
       // no need / very not good.. cant own yourself
@@ -195,7 +196,8 @@ class Widget {
   private void setId(int id) {
     this.id = id;
   }
-
+  
+  // adds a child to list of child widgets; handles replacing parent, etc
   void addChild(Widget child) {
     if ( children.size() > child.getId() && children.get(child.getId()) == child || child == this ) {
       // don't need to / invalid, bad!!!
