@@ -162,10 +162,10 @@ class DebugScreen2 extends Screen {
   }
 }
 
-class SearchScreen extends Screen {
+/*class SearchScreen extends Screen {
   SearchBar searchBar = new SearchBar(0, 0, SCREENX, 100);
   SearchScreen() {
     addWidget(searchBar);
     
   }
-}
+}*/

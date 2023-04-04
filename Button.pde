@@ -2,15 +2,15 @@ class Button extends Widget {
   private String label;
 
   Button() {
-    this(0, 0, 0, 0, color(0), null);
+    this(0, 0, 0, 0, BUTTON_COLOR, null);
   }
 
   Button(float x, float y, float width, float height) {
-    this(x, y, width, height, color(128), null);
+    this(x, y, width, height, BUTTON_COLOR, null);
   }
-  
+
   Button(float x, float y, float width, float height, Widget parent) {
-    this(x, y, width, height, color(128), parent);
+    this(x, y, width, height, BUTTON_COLOR, parent);
   }
 
   Button(float x, float y, float width, float height, color widgetColor) {
@@ -24,16 +24,40 @@ class Button extends Widget {
   Button(float x, float y, float width, float height, color widgetColor, String label, Widget parent) {
     super(x, y, width, height, widgetColor, parent);
     this.label = label;
-    addChild(new TextWidget("", label, (int) height, 0, 0, width*2, height*2));
+    addChild(new TextWidget("", label, (int) height, 0, 0, width, height));
+  }
+
+  private TextWidget getLabel() {
+    TextWidget textWidget = (TextWidget) getChild(0);
+    return textWidget;
   }
 
   void setLabel(String label) {
-    TextWidget textWidget = (TextWidget) getChild(0);
-    textWidget.setLabel(label);
+    getLabel().setLabel(label);
   }
+
+  void setLabelSize(int size) {
+    getLabel().setTextSize(size);
+  }
+  
+  void setAlign(int alignment) {
+    getLabel().setAlign(alignment);
+  }
+  
+  void moveLabel(int x, int y) {
+    getLabel().setX(int(getLabel().getX()) + x);
+    getLabel().setY(int(getLabel().getY()) + y);
+    println(getLabel().getEffectiveX());
+  }
+  
+  void setLabelColor(color newColor) {
+    getLabel().setColor(newColor);
+  }
+  
+  
 }
 
-class CheckBox extends Button { 
+class CheckBox extends Button {
   private String checkCharacter;
   private boolean isChecked;
   CheckBox() {
@@ -57,13 +81,13 @@ class CheckBox extends Button {
     checkCharacter = "a";
     isChecked = false;
   }
-  
-  void onClick(int mouseX, int mouseY) {  
+
+  void onClick(int mouseX, int mouseY) {
     if ( isTouching(mouseX, mouseY) ) {
       toggle();
     }
   }
-  
+
   void toggle() {
     if ( isChecked ) {
       setLabel("");
@@ -73,6 +97,4 @@ class CheckBox extends Button {
       isChecked = true;
     }
   }
-  
-  
 }

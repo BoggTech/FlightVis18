@@ -1,7 +1,9 @@
-Screen screen, screen2, screen3, activeScreen;
+import geomerative.*;
+
+Screen menuScreen, mapScreen, searchScreen, screen, screen2, screen3, activeScreen;
 DataFile dataFile;
 boolean ready = false;
-PShape gear;
+PShape gear, logo;
 String currentJob;
 float loadCounter;
 
@@ -10,23 +12,30 @@ void settings() {
 }
 
 void setup() {
+  RG.init(this);
   loadCounter = 0;
   currentJob = "";
   gear = loadShape("gear.svg");
+  logo = loadShape("logothing.svg");
+  gear.setFill(TEXT_COLOR);
+  gear.disableStyle();
+  logo.disableStyle();
+  logo.setFill(TEXT_COLOR);
   thread("setUpScreens");
 }
 
 void draw() {
   if ( !ready ) {
-    background(128);
-    fill(0);
+    background(BG_COLOR);
     textSize(32);
     textAlign(CENTER, CENTER);
     loadCounter++;
     textLeading(30);
+    fill(TEXT_COLOR);
     text("Loading " + currentJob + "..."
       + "\n" + round(loadCounter/60), SCREENX/2, SCREENY/2+96);
     pushMatrix();
+    noStroke();
     translate(SCREENX/2, SCREENY/2);
     rotate((((float) frameCount)/15));
     shape(gear, -50, -50, 100, 100);
@@ -34,12 +43,15 @@ void draw() {
     textAlign(LEFT);
     return;
   }
-  background(100);
+  background(BG_COLOR);
   activeScreen.checkCollisions(mouseX, mouseY);
   activeScreen.draw();
 }
 
 void mousePressed() {
+  if ( !ready ) {
+    return;
+  }
   // for "global" events  not sure if this'll be needed (beyond screen transitions maybe?
   // global events are always negative; 0 is "null event"
   activeScreen.mousePressed(mouseX, mouseY);
@@ -61,20 +73,33 @@ void mousePressed() {
   case GLOBAL_EVENT_DEBUG_3:
     activeScreen = screen3;
     break;
+  case GLOBAL_EVENT_MAP_SCREEN:
+    activeScreen = mapScreen;
+  case GLOBAL_EVENT_SEARCH_SCREEN:
+    activeScreen = searchScreen;
   case GLOBAL_EVENT_NULL:
     break;
   }
 }
 
 void mouseDragged() {
+  if ( !ready ) {
+    return;
+  }
   activeScreen.mouseDragged(mouseX, mouseY, pmouseX, pmouseY);
 }
 
 void keyPressed() {
+  if ( !ready ) {
+    return;
+  }
   activeScreen.keyPressed(key);
 }
 
 void mouseReleased() {
+  if ( !ready ) {
+    return;
+  }
   activeScreen.mouseReleased(mouseX, mouseY);
 }
 
@@ -82,16 +107,16 @@ void setUpScreens() {
   currentJob = "DataFile";
   dataFile = new DataFile(dataPath("flights.db"));
 
-  currentJob = "DebugScreen";
-  screen = new DebugScreen();
-
-  currentJob = "DebugScreen2";
-  screen2 = new DebugScreen2();
+  currentJob = "MenuScreen";
+  menuScreen = new MenuScreen();
 
   currentJob = "SearchScreen";
-  screen3 = new SearchScreen();
+  searchScreen = new SearchScreen();
+
+  currentJob = "MapScreen";
+  mapScreen = new MapScreen();
 
   currentJob = "nothing";
-  activeScreen = screen;
+  activeScreen = menuScreen;
   ready = true;
 }
