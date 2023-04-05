@@ -46,7 +46,7 @@ class DebugScreen extends Screen {
     
     checkBox = new CheckBox(10, 300, 30, 30);
 
-    pieChart = new PieChart(data, labels, colors, 200, 150, 150);
+    pieChart = new PieChart(data, colors, 200, 150, 150);
     slider = new Slider(150, 300, 300, 50);
     slider2 = new Slider(0, 360, 600, 50);
 
@@ -121,7 +121,7 @@ class DebugScreen2 extends Screen {
     String[] labels = {"one", "two"};
     color[] colors = {color(255, 0, 0), color(0, 255, 0)};
 
-    pieChart = new PieChart(data, labels, colors, 200, 150, 150);
+    pieChart = new PieChart(data, colors, 200, 150, 150);
     
     pieChartText = new TextWidget("AgencyFB-Bold", "", 32, 300, 50, 400, 300);
     pieChartText.setLabel(label + ": " + round(pieChart.data[0]) + "\nOther: " + round(pieChart.data[1]));
