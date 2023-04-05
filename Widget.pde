@@ -107,15 +107,15 @@ class Widget {
   void setBorderColor(color borderColor) {
     this.borderColor = borderColor;
   }
-  
+
   color getDefaultBorderColor() {
     return defaultBorderColor;
   }
-  
+
   color getSelectedBorderColor() {
     return selectedBorderColor;
   }
-  
+
   color getBorderColor() {
     return borderColor;
   }
@@ -196,7 +196,7 @@ class Widget {
   private void setId(int id) {
     this.id = id;
   }
-  
+
   // adds a child to list of child widgets; handles replacing parent, etc
   void addChild(Widget child) {
     if ( children.size() > child.getId() && children.get(child.getId()) == child || child == this ) {
@@ -255,15 +255,15 @@ class Widget {
   }
 
   void mouseDragged(int mouseX, int mouseY, int pmouseX, int pmouseY) {
-    onDrag(mouseX, mouseY, pmouseX, pmouseY);
+    onMouseDragged(mouseX, mouseY, pmouseX, pmouseY);
     for ( int i = 0; i < getChildrenLength(); i++ ) {
       Widget widget = (Widget) getChild(i);
       widget.mouseDragged(mouseX, mouseY, pmouseX, pmouseY);
     }
   }
 
-  void onDrag(int mouseX, int mouseY, int pmouseX, int pmouseY) {
-    // boring
+  void onMouseDragged(int mouseX, int mouseY, int pmouseX, int pmouseY) {
+    // i just shouldve named it this
   }
 
   void mouseReleased(int mouseX, int mouseY) {
@@ -277,6 +277,17 @@ class Widget {
   void onMouseReleased(int mouseX, int mouseY) {
   }
 
+  void mouseWheel(int wheel) {
+    onMouseWheel(wheel);
+    for ( int i = 0; i < getChildrenLength(); i++ ) {
+      Widget widget = (Widget) getChild(i);
+      widget.mouseWheel(wheel);
+    }
+  }
+
+  void onMouseWheel(int wheel) {
+  }
+
   void keyPressed(char keyValue) {
     onKeyPressed(keyValue);
     for ( int i = 0; i < getChildrenLength(); i++ ) {
@@ -288,7 +299,8 @@ class Widget {
   void onKeyPressed(char keyValue) {
   }
 
-  void draw() {
+  // draw w/o children
+  void drawThis() {
     fill(widgetColor);
     pushMatrix();
     translate(effectiveX+width/2, effectiveY+height/2);
@@ -297,6 +309,9 @@ class Widget {
     rect(-width/2, -height/2, width, height);
     popMatrix();
     borderColor = defaultBorderColor;
+  }
+  void draw() {
+    drawThis();
     drawChildren();
   }
 

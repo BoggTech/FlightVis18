@@ -30,7 +30,7 @@ class MenuScreen extends Screen {
     title.setAlign(CENTER);
 
     mapButton = new Button(0, SCREENY-buttonHeight, SCREENX/2-1, buttonHeight);
-    mapButton.setLabel("View Map");
+    mapButton.setLabel("Interactive Map");
     mapButton.setLabelSize(64);
     mapButton.setAlign(CENTER);
     mapButton.moveLabel(0, -10);
@@ -73,6 +73,10 @@ class SearchScreen extends Screen {
 class MapScreen extends Screen {
   MapScreen() {
     super();
-    addWidget(new MapWidget(0, 0, 200, 200, "usa-wikipedia.svg"));
+    addWidget(new MapWidget(25, 25, SCREENX-50, SCREENY-100, "usa-wikipedia.svg"));
+  }
+
+  void draw() {
+    super.draw();
   }
 }
