@@ -1,11 +1,22 @@
 class MapWidget extends Widget {
   // time for hell
+
+  final float MIN_SCALE = 1;
+  final float MAX_SCALE = 2;
   RShape mask;
   String[] stateAbbreviations;
+  RShape originalMap;
   RShape map;
   RShape maskedMap;
   boolean changes;
   String selectedState;
+  
+  float mapCenterX;
+  float mapCenterY;
+  int max_x;
+  int max_y;
+
+  float scale;
 
   color selectedColor;
   color defaultColor;
@@ -15,20 +26,26 @@ class MapWidget extends Widget {
     setY(y);
     setWidth(width);
     setHeight(height);
-    map = RG.loadShape(mapFile);
+    originalMap = RG.loadShape(mapFile);
+    max_x = width;
+    max_y = height;
 
     // position + scale
-    float xDifference = width-map.width;
-    float yDifference = height-map.height;
+    scale = 1;
+    float xDifference = width-originalMap.width;
+    float yDifference = height-originalMap.height;
 
     float differencePercent;
 
-    differencePercent = getHeight()/map.height;
-    map.translate(getEffectiveX()+xDifference/2, getEffectiveY()+yDifference/2);
-    map.scale(differencePercent, getEffectiveX()+getWidth()/2, getEffectiveY()+getHeight()/2);
-    
+    differencePercent = getHeight()/originalMap.height;
+    originalMap.translate(getEffectiveX()+xDifference/2, getEffectiveY()+yDifference/2);
+    originalMap.scale(differencePercent, getEffectiveX()+getWidth()/2, getEffectiveY()+getHeight()/2);
 
-    map.setFill(color(0));
+
+    originalMap.setFill(color(0));
+
+    map = new RShape(originalMap);
+    calculateCenterPoint();
 
     mask = RShape.createRectangle(getEffectiveX(), getEffectiveY(), width, height);
 
@@ -46,12 +63,55 @@ class MapWidget extends Widget {
   }
 
   void onMouseWheel(int wheel) {
-    map.scale((float) Math.pow(1.1, wheel), mouseX, mouseY);
+    float newScale = (float) (scale * Math.pow(1.1, wheel));
+    float newX;
+    float newY;
+    if ( newScale >= MIN_SCALE && newScale <= MAX_SCALE ) {
+      map.scale((float) Math.pow(1.1, wheel), mouseX, mouseY);
+      scale = newScale;
+    } else if ( newScale < MIN_SCALE ) {
+      newX = map.getX();
+      newY = map.getY();
+      map = new RShape(originalMap);
+      map.scale(MIN_SCALE);
+      map.translate(newX-map.getX(), newY-map.getY());
+      scale = MIN_SCALE;
+    } else if ( newScale > MAX_SCALE ) {
+      newX = map.getX();
+      newY = map.getY();
+      map = new RShape(originalMap);
+      map.scale(MAX_SCALE);
+      map.translate(newX-map.getX(), newY-map.getY());
+      scale = MAX_SCALE;
+    }
     changes = true;
   }
 
   void onMouseDragged(int mouseX, int mouseY, int pmouseX, int pmouseY) {
-    map.translate(mouseX-pmouseX, mouseY-pmouseY);
+    //calculateCenterPoint();
+    //TODO: Limits
+    float translateX = mouseX-pmouseX;
+    float translateY = mouseY-pmouseY;
+    /*float newX = mapCenterX+translateX;
+    float newY = mapCenterY+translateY;
+    
+    println(abs(newX));
+    
+    if ( abs(newX) > max_x ) {
+      if ( newX > max_x+getEffectiveX() ) {
+        translateX = translateX-(newX-(max_x+getEffectiveX()));
+      } else {
+        translateX = translateX-(newX-max_x-getEffectiveX());
+      }
+    }
+    if ( abs(newY) > (max_y+getEffectiveY()) ) {
+      if ( newY < -max_y ) {
+        translateY = translateY-(newY+max_y+getEffectiveY());
+      } else {
+        translateY = translateY-(newY-max_y-getEffectiveY());
+      }
+    }*/
+    map.translate(translateX, translateY);
     changes = true;
   }
 
@@ -70,6 +130,11 @@ class MapWidget extends Widget {
       }
     }
   }
+  
+  void calculateCenterPoint() {
+    mapCenterX = map.getX() + (map.width/2);
+    mapCenterY = map.getY() + (map.height/2);
+  }
 
   void draw() {
     super.drawThis();
@@ -85,7 +150,7 @@ class MapWidget extends Widget {
       maskedMap.getChild(selectedState).draw();
     }
   }
-  
+
   String getSelectedState() {
     return selectedState;
   }
