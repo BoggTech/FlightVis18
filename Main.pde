@@ -1,6 +1,7 @@
 import geomerative.*;
 
-Screen menuScreen, mapScreen, searchScreen, screen, screen2, screen3, activeScreen;
+Screen menuScreen, mapScreen, searchScreen, screen, screen2, screen3, overviewScreen,
+  activeScreen;
 DataFile dataFile;
 boolean ready = false;
 boolean error = false;
@@ -70,6 +71,9 @@ void mousePressed() {
     break;
   case GLOBAL_EVENT_SEARCH_SCREEN:
     activeScreen = searchScreen;
+    break;
+  case GLOBAL_EVENT_OVERVIEW_SCREEN:
+    activeScreen = overviewScreen;
     break;
   case GLOBAL_EVENT_NULL:
     break;
@@ -145,6 +149,9 @@ void setUpScreens() {
 
   currentJob = "MapScreen";
   mapScreen = new MapScreen();
+
+  currentJob = "OverviewScreen";
+  overviewScreen = new OverviewScreen();
 
   currentJob = "nothing";
   activeScreen = menuScreen;
