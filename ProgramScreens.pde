@@ -73,6 +73,7 @@ class SearchScreen extends Screen {
 class MapScreen extends Screen {
   MapScreen() {
     super();
+    //addWidget(new MapWidget(25, 25, SCREENX-50, SCREENY-100, "usa-wikipedia.svg"));
     addWidget(new MapWidget(25, 25, SCREENX-50, SCREENY-100, "usa-wikipedia.svg"));
   }
 

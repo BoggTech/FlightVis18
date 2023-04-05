@@ -16,16 +16,27 @@ class MapWidget extends Widget {
     setWidth(width);
     setHeight(height);
     map = RG.loadShape(mapFile);
-    map.translate(x, y);
+
+    // position + scale
+    float xDifference = width-map.width;
+    float yDifference = height-map.height;
+
+    float differencePercent;
+
+    differencePercent = getHeight()/map.height;
+    map.translate(getEffectiveX()+xDifference/2, getEffectiveY()+yDifference/2);
+    map.scale(differencePercent, getEffectiveX()+getWidth()/2, getEffectiveY()+getHeight()/2);
+    
+
     map.setFill(color(0));
 
-    mask = RShape.createRectangle(x, y, width, height);
+    mask = RShape.createRectangle(getEffectiveX(), getEffectiveY(), width, height);
 
     String[] abbr = new String[]{"AL", "AK", "AZ", "AR", "CA", "CO", "CT", "DE", "FL", "GA", "HI", "ID", "IL", "IN", "IA", "KS", "KY", "LA", "ME", "MD", "MA", "MI",
       "MN", "MS", "MO", "MT", "NE", "NV", "NH", "NJ", "NM", "NY", "NC", "ND", "OH", "OK", "OR", "PA", "RI", "SC", "SD", "TN", "TX", "UT", "VT", "VA", "WA",
       "WV", "WI", "WY"};
     stateAbbreviations = abbr;
-    selectedState = stateAbbreviations[0];
+    selectedState = null;
 
     for ( int i = 0; i < stateAbbreviations.length; i++ ) {
       String abbrev = stateAbbreviations[i];
@@ -66,12 +77,17 @@ class MapWidget extends Widget {
       mask();
       changes = false;
     }
-    stroke(getSelectedBorderColor());
+    fill(255);
+    stroke(0);
     maskedMap.draw();
     if ( selectedState != null ) {
       fill(color(255, 0, 0));
       maskedMap.getChild(selectedState).draw();
     }
+  }
+  
+  String getSelectedState() {
+    return selectedState;
   }
 
   void mask() {
