@@ -30,7 +30,7 @@ class MenuScreen extends Screen {
     title.setAlign(CENTER);
 
     mapButton = new Button(0, SCREENY-buttonHeight, SCREENX/2-1, buttonHeight);
-    mapButton.setLabel("View Map");
+    mapButton.setLabel("Interactive Map");
     mapButton.setLabelSize(64);
     mapButton.setAlign(CENTER);
     mapButton.moveLabel(0, -10);
@@ -81,11 +81,95 @@ class SearchScreen extends Screen {
 
 // ---------------- MAP ----------------
 class MapScreen extends Screen {
+  String formatString = "%s\nTotal Flights: %s\nDiverted: %s\nCancelled: %s\n";
+  MapWidget map;
+  Button backButton, closeInfoButton;
+  TextWidget stateLabel, infoLabel;
+  Widget info;
+  String currentState;
+  Boolean drag;
+  int total, diverted, cancelled;
+
   MapScreen() {
     super();
-    addWidget(new MapWidget(0, 0, 200, 200, "usa-wikipedia.svg"));
+    map = new MapWidget(25, 25, SCREENX-50, SCREENY-100, "usa-wikipedia.svg");
+    map.setColor(color(0));
+
+    drag = false;
+
+    backButton = new Button(25, SCREENY-65, 80, 55);
+    backButton.setLabel("BACK");
+    backButton.setAlign(CENTER);
+    backButton.setLabelSize(24);
+    backButton.moveLabel(0, -3);
+
+    stateLabel = new TextWidget("", "test", 48, SCREENX-600, SCREENY-65, 600, 65);
+    stateLabel.move(-25, -6);
+    stateLabel.setAlign(RIGHT);
+
+    info = new Widget(SCREENX/2-250, SCREENY/2-250, 500, 500);
+    info.setSelectedBorderColor(info.getDefaultBorderColor());
+    infoLabel = new TextWidget(10, 10, int(info.getWidth()-10), int(info.getHeight()-40));
+    infoLabel.setLabel(formatString);
+    info.addChild(infoLabel);
+    info.hide();
+    
+    closeInfoButton = new Button(info.getWidth()-100, info.getHeight()-50, 90, 40);
+    closeInfoButton.setLabel("BACK");
+    closeInfoButton.setAlign(CENTER);
+    closeInfoButton.setLabelSize(24);
+    closeInfoButton.moveLabel(0, -3);
+    info.addChild(closeInfoButton);
+
+
+
+    backButton.setEvent(GLOBAL_EVENT_MENU_SCREEN);
+    addWidget(map);
+    addWidget(backButton);
+    addWidget(stateLabel);
+    addWidget(info);
+  }
+
+  void draw() {
+    String state = map.getSelectedState();
+    if ( state != null ) {
+      if ( currentState != state ) {
+        stateLabel.setLabel(map.getFullStateName(state));
+      }
+    } else {
+      stateLabel.setLabel("N/A");
+    }
+    super.draw();
+  }
+
+  void onMouseReleased(int mouseX, int mouseY) {
+    String state = map.getSelectedState();
+    if ( drag ) {
+      drag = false;
+      return;
+    }
+    if ( state != null && !info.shown && map.isTouching(mouseX, mouseY)) {
+      map.setActive(false);
+      total = dataFile.countTotalState(state);
+      diverted = dataFile.countDivertedState(state);
+      cancelled = dataFile.countCancelledState(state);
+      infoLabel.setLabel(String.format(formatString, map.getFullStateName(state), total, diverted, cancelled));
+      info.show();
+    } else {
+      Button button = (Button) info.getChild(1);
+      if ( button.isTouching(mouseX, mouseY) ) {
+        map.setActive(true);
+        map.checkCollisions(mouseX, mouseY);
+        info.hide();
+      }
+    }
+  }
+
+  void onMouseDragged(int mouseX, int mouseY, int pmouseX, int pmouseY) {
+    drag = true;
   }
 }
+
 
 // ---------------OVERVIEW----------
 class OverviewScreen extends Screen {
@@ -126,19 +210,19 @@ class OverviewScreen extends Screen {
     default:
       return true;
     case 1:
-    if(flights[0]==0) flights[0]=cancelledFlights;
+      if (flights[0]==0) flights[0]=cancelledFlights;
       else flights[0]=0;
       thePieChart.setup();
       println(flights[0]);
       return false;
     case 2:
-    if(flights[1]==0) flights[1]=notCancelled;
+      if (flights[1]==0) flights[1]=notCancelled;
       else flights[1]=0;
       thePieChart.setup();
       println(flights[1]);
       return false;
     case 3:
-      if(flights[2]==0) flights[2]=diverted;
+      if (flights[2]==0) flights[2]=diverted;
       else flights[2]=0;
       thePieChart.setup();
       return false;
