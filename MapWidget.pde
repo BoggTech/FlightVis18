@@ -5,12 +5,19 @@ class MapWidget extends Widget {
   final float MAX_SCALE = 2;
   RShape mask;
   String[] stateAbbreviations;
+  String[] fullStateNames = {"Alabama", "Alaska", "Arizona", "Arkansas", "California", "Colorado", "Connecticut", "Delaware", "Florida", "Georgia", "Hawaii",
+    "Idaho", "Illinois", "Indiana", "Iowa", "Kansas", "Kentucky", "Louisiana", "Maine", "Maryland", "Massachusetts", "Michigan", "Minnesota", "Mississippi",
+    "Missouri", "Montana", "Nebraska", "Nevada", "New Hampshire", "New Jersey", "New Mexico", "New York", "North Carolina", "North Dakota", "Ohio", "Oklahoma",
+    "Oregon", "Pennsylvania", "Rhode Island", "South Carolina", "South Dakota", "Tennessee", "Texas", "Utah", "Vermont", "Virginia", "Washington", "West Virginia",
+    "Wisconsin", "Wyoming"};
+
   RShape originalMap;
   RShape map;
   RShape maskedMap;
   boolean changes;
   String selectedState;
-  
+  boolean active;
+
   float mapCenterX;
   float mapCenterY;
   int max_x;
@@ -29,6 +36,7 @@ class MapWidget extends Widget {
     originalMap = RG.loadShape(mapFile);
     max_x = width;
     max_y = height;
+    active = true;
 
     // position + scale
     scale = 1;
@@ -61,8 +69,15 @@ class MapWidget extends Widget {
     }
     mask();
   }
+  
+  void setActive(Boolean thing) {
+    active = thing;
+  }
 
   void onMouseWheel(int wheel) {
+    if ( !active ) {
+      return;
+    }
     float newScale = (float) (scale * Math.pow(1.1, wheel));
     float newX;
     float newY;
@@ -90,32 +105,19 @@ class MapWidget extends Widget {
   void onMouseDragged(int mouseX, int mouseY, int pmouseX, int pmouseY) {
     //calculateCenterPoint();
     //TODO: Limits
+    if ( !active ) {
+      return;
+    }
     float translateX = mouseX-pmouseX;
     float translateY = mouseY-pmouseY;
-    /*float newX = mapCenterX+translateX;
-    float newY = mapCenterY+translateY;
-    
-    println(abs(newX));
-    
-    if ( abs(newX) > max_x ) {
-      if ( newX > max_x+getEffectiveX() ) {
-        translateX = translateX-(newX-(max_x+getEffectiveX()));
-      } else {
-        translateX = translateX-(newX-max_x-getEffectiveX());
-      }
-    }
-    if ( abs(newY) > (max_y+getEffectiveY()) ) {
-      if ( newY < -max_y ) {
-        translateY = translateY-(newY+max_y+getEffectiveY());
-      } else {
-        translateY = translateY-(newY-max_y-getEffectiveY());
-      }
-    }*/
     map.translate(translateX, translateY);
     changes = true;
   }
 
   void checkCollisions(int mouseX, int mouseY) {
+    if ( !active ) {
+      return;
+    }
     if ( !super.isTouching(mouseX, mouseY) || !map.contains(mouseX, mouseY) ) {
       selectedState = null;
       return;
@@ -130,7 +132,7 @@ class MapWidget extends Widget {
       }
     }
   }
-  
+
   void calculateCenterPoint() {
     mapCenterX = map.getX() + (map.width/2);
     mapCenterY = map.getY() + (map.height/2);
@@ -149,6 +151,19 @@ class MapWidget extends Widget {
       fill(color(255, 0, 0));
       maskedMap.getChild(selectedState).draw();
     }
+  }
+
+  String getFullStateName(String abbreviation) {
+    if ( abbreviation.length() > 2 ) {
+      return "";
+    } else {
+      for ( int i = 0; i < stateAbbreviations.length; i++ ) {
+        if ( stateAbbreviations[i].equals(abbreviation) ) {
+          return fullStateNames[i];
+        }
+      }
+    }
+    return "";
   }
 
   String getSelectedState() {

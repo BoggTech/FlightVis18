@@ -45,8 +45,7 @@ class Button extends Widget {
   }
   
   void moveLabel(int x, int y) {
-    getLabel().setX(int(getLabel().getX()) + x);
-    getLabel().setY(int(getLabel().getY()) + y);
+    getLabel().move(x, y);
   }
   
   void setLabelColor(color newColor) {

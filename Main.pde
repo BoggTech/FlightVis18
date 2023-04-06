@@ -66,6 +66,9 @@ void mousePressed() {
   case GLOBAL_EVENT_DEBUG_3:
     activeScreen = screen3;
     break;
+  case GLOBAL_EVENT_MENU_SCREEN:
+    activeScreen = menuScreen;
+    break;
   case GLOBAL_EVENT_MAP_SCREEN:
     activeScreen = mapScreen;
     break;

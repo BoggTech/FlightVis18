@@ -18,18 +18,19 @@ class Widget {
   private ArrayList children;
   private int id;
   private float rotation;
+  private boolean shown;
   private int event;
 
   Widget() {
-    this(0, 0, 0, 0, color(0), null);
+    this(0, 0, 0, 0, color(BG_COLOR), null);
   }
 
   Widget(float x, float y, float width, float height) {
-    this(x, y, width, height, color(128), null);
+    this(x, y, width, height, color(BG_COLOR), null);
   }
 
   Widget(float x, float y, float width, float height, Widget parent) {
-    this(x, y, width, height, color(128), parent);
+    this(x, y, width, height, color(BG_COLOR), parent);
   }
 
   Widget(float x, float y, float width, float height, color widgetColor) {
@@ -37,6 +38,7 @@ class Widget {
   }
 
   Widget(float x, float y, float width, float height, color widgetColor, Widget parent) {
+    shown = true;
     children = new ArrayList<>();
     this.x = x;
     this.y = y;
@@ -66,6 +68,14 @@ class Widget {
       Widget widget = (Widget) children.get(i);
       widget.updatePosition();
     }
+  }
+  
+  void show() {
+    shown = true;
+  }
+  
+  void hide() {
+    shown = false;
   }
 
   float getX() {
@@ -301,6 +311,9 @@ class Widget {
 
   // draw w/o children
   void drawThis() {
+    if ( !shown ) {
+      return;
+    }
     fill(widgetColor);
     pushMatrix();
     translate(effectiveX+width/2, effectiveY+height/2);
@@ -316,6 +329,9 @@ class Widget {
   }
 
   void drawChildren() {
+    if ( !shown ) {
+      return;
+    }
     for ( int i = 0; i < children.size(); i++ ) {
       Widget widget = (Widget) children.get(i);
       widget.draw();
