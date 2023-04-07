@@ -127,7 +127,7 @@ class DataFile {
     catch ( SQLException e ) {
       handleSQLException(e);
       return -1;
-    }
+    }  
   }
 
   int countDivertedState(String state) {

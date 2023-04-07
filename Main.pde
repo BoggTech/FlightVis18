@@ -1,13 +1,14 @@
 import geomerative.*;
 
-Screen menuScreen, mapScreen, searchScreen, screen, screen2, screen3, overviewScreen,
-  activeScreen;
+Screen nextScreen, menuScreen, mapScreen, searchScreen, screen, screen2, screen3, overviewScreen, activeScreen;
 DataFile dataFile;
 boolean ready = false;
 boolean error = false;
+boolean transition, left;
 PShape gear, logo, warning;
 String currentJob;
 float loadCounter;
+final int transitionSpeed = 50;
 
 void settings() {
   size(SCREENX, SCREENY);
@@ -26,19 +27,45 @@ void setup() {
   logo.disableStyle();
   warning.disableStyle();
   logo.setFill(TEXT_COLOR);
+  transition = false;
   thread("setUpScreens");
 }
 
 void draw() {
+  background(BG_COLOR);
   if ( !ready ) {
     loadingScreen();
     return;
+  } else if ( transition ) {
+    if ( !left ) {
+      activeScreen.setX(activeScreen.getX()-transitionSpeed);
+      nextScreen.setX(nextScreen.getX()-transitionSpeed);
+      activeScreen.draw();
+      nextScreen.draw();
+      if ( nextScreen.getX()-transitionSpeed < 0 ) {
+        transition = false;
+        activeScreen.setX(0);
+        nextScreen.setX(0);
+        activeScreen = nextScreen;
+        nextScreen = null;
+      }
+    } else {
+      activeScreen.setX(activeScreen.getX()+transitionSpeed);
+      nextScreen.setX(nextScreen.getX()+transitionSpeed);
+      activeScreen.draw();
+      nextScreen.draw();
+      if ( nextScreen.getX()+transitionSpeed > 0 ) {
+        transition = false;
+        activeScreen.setX(0);
+        nextScreen.setX(0);
+        activeScreen = nextScreen;
+        nextScreen = null;
+      }
+    }
+    return;
   }
-  background(BG_COLOR);
   activeScreen.checkCollisions(mouseX, mouseY);
   activeScreen.draw();
-  textSize(16);
-  text("[fps] remove in final\n" +frameRate, 0, 15);
 }
 
 void mousePressed() {
@@ -67,19 +94,35 @@ void mousePressed() {
     activeScreen = screen3;
     break;
   case GLOBAL_EVENT_MENU_SCREEN:
-    activeScreen = menuScreen;
+    transition(menuScreen, LEFT);
     break;
   case GLOBAL_EVENT_MAP_SCREEN:
-    activeScreen = mapScreen;
+    transition(mapScreen, RIGHT);
     break;
   case GLOBAL_EVENT_SEARCH_SCREEN:
-    activeScreen = searchScreen;
+    transition(searchScreen, RIGHT);
     break;
   case GLOBAL_EVENT_OVERVIEW_SCREEN:
-    activeScreen = overviewScreen;
+    transition(overviewScreen, RIGHT);
     break;
   case GLOBAL_EVENT_NULL:
     break;
+  }
+}
+
+void transition(Screen screen, int direction) {
+  if ( !transition ) {
+    if ( direction == RIGHT ) {
+      left = false;
+      transition = true;
+      nextScreen = screen;
+      nextScreen.setX(SCREENX);
+    } else {
+      left = true;
+      transition = true;
+      nextScreen = screen;
+      nextScreen.setX(-SCREENX);
+    }
   }
 }
 
@@ -160,4 +203,16 @@ void setUpScreens() {
   activeScreen = menuScreen;
 
   ready = true;
+}
+
+static String fancyNumber(int number) {
+  String totalFlightsString = Integer.toString(number);
+  String newString = "";
+  for ( int i = totalFlightsString.length(); i > 3; i -= 3 ) {
+    String cut = totalFlightsString.substring(totalFlightsString.length()-3, totalFlightsString.length());
+    totalFlightsString = totalFlightsString.substring(0, totalFlightsString.length()-3);
+    newString =  "," + cut + newString;
+  }
+  newString = totalFlightsString + newString;
+  return newString;
 }
