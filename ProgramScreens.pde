@@ -113,7 +113,6 @@ class MapScreen extends Screen {
     infoLabel.setLabel(formatString);
     info.addChild(infoLabel);
     info.hide();
-    
     closeInfoButton = new Button(info.getWidth()-100, info.getHeight()-50, 90, 40);
     closeInfoButton.setLabel("BACK");
     closeInfoButton.setAlign(CENTER);
@@ -183,25 +182,40 @@ class OverviewScreen extends Screen {
   Button divert = new Button(600, 250, 250, 100, color(255, 255, 0));
   Button cancel = new Button(600, 450, 250, 100, color(250, 0, 0));
   PieChart thePieChart = new PieChart(flights,
-    colors, 250, 300, 400);
+    colors, 400, 300, 300);
+  Button backButton = new Button(25, SCREENY-65, 80, 55);
+  Button reset = new Button(120, SCREENY-65, 100, 55);
+
 
   OverviewScreen() {
     super();
+    addWidget(backButton);
     addWidget(success);
     addWidget(divert);
     addWidget(cancel);
-    success.setLabel("toggle successful");
+    addWidget(reset);
+    success.setLabel("toggle successful ("+notCancelled+")");
     success.setLabelSize(24);
     success.setAlign(CENTER);
     success.setEvent(2);
-    divert.setLabel("toggle diverted");
+    divert.setLabel("toggle diverted ("+diverted+")");
     divert.setLabelSize(24);
     divert.setAlign(CENTER);
     divert.setEvent(3);
-    cancel.setLabel("toggle cancelled");
+    cancel.setLabel("toggle cancelled ("+cancelledFlights+")");
     cancel.setLabelSize(24);
     cancel.setAlign(CENTER);
     cancel.setEvent(1);
+    backButton.setLabel("BACK");
+    backButton.setAlign(CENTER);
+    backButton.setLabelSize(24);
+    backButton.moveLabel(0, -3);
+    backButton.setEvent(GLOBAL_EVENT_MENU_SCREEN);
+    reset.setLabel("RESET");
+    reset.setAlign(CENTER);
+    reset.setLabelSize(24);
+    reset.moveLabel(0, -3);
+    reset.setEvent(4);
     addWidget(thePieChart);
   }
 
@@ -213,17 +227,21 @@ class OverviewScreen extends Screen {
       if (flights[0]==0) flights[0]=cancelledFlights;
       else flights[0]=0;
       thePieChart.setup();
-      println(flights[0]);
       return false;
     case 2:
       if (flights[1]==0) flights[1]=notCancelled;
       else flights[1]=0;
       thePieChart.setup();
-      println(flights[1]);
       return false;
     case 3:
       if (flights[2]==0) flights[2]=diverted;
       else flights[2]=0;
+      thePieChart.setup();
+      return false;
+    case 4:
+      flights[0]=cancelledFlights;
+      flights[1]=notCancelled;
+      flights[2]=diverted;
       thePieChart.setup();
       return false;
     }
