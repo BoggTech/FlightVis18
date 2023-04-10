@@ -257,7 +257,6 @@ class OverviewScreen extends Screen {
   Button success = new Button(600, 50, 250, 100, color(0, 255, 0));
   Button divert = new Button(600, 250, 250, 100, color(255, 255, 0));
   Button cancel = new Button(600, 450, 250, 100, color(250, 0, 0));
-  Button backButton;
   PieChart thePieChart = new PieChart(flights,
     colors, 400, 300, 300);
   Button backButton = new Button(25, SCREENY-65, 80, 55);
