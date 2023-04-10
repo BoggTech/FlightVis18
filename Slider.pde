@@ -35,7 +35,7 @@ class Slider extends Widget {
     return (Widget) getChild(0);
   }
 
-  void onMouseDragged(int mouseX, int mouseY, int pmouseX, int pmouseY) {
+  void onDrag(int mouseX, int mouseY, int pmouseX, int pmouseY) {
     Widget dragger = getDragger();
     float draggerWidth = dragger.getWidth();
     int distance = mouseX - int(getEffectiveX()); // relative X position of mouse

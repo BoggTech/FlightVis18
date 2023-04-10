@@ -1,5 +1,6 @@
 class MapWidget extends Widget {
   // time for hell
+  // TODO: preload data??
 
   final float MIN_SCALE = 1;
   final float MAX_SCALE = 2;
@@ -105,7 +106,7 @@ class MapWidget extends Widget {
   void onMouseDragged(int mouseX, int mouseY, int pmouseX, int pmouseY) {
     //calculateCenterPoint();
     //TODO: Limits
-    if ( !active ) {
+    if ( !active || !isTouching(mouseX, mouseY) ) {
       return;
     }
     float translateX = mouseX-pmouseX;
@@ -140,6 +141,8 @@ class MapWidget extends Widget {
 
   void draw() {
     super.drawThis();
+    pushMatrix();
+    translate(getEffectiveX()-getX(), getEffectiveY()-getY());
     if ( changes ) {
       mask();
       changes = false;
@@ -151,6 +154,7 @@ class MapWidget extends Widget {
       fill(color(255, 0, 0));
       maskedMap.getChild(selectedState).draw();
     }
+    popMatrix();
   }
 
   String getFullStateName(String abbreviation) {

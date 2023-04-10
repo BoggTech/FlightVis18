@@ -2,6 +2,7 @@ class SearchBar extends Widget {
 
   ArrayList<String> insideSearchBar = new ArrayList<String>();
   private int textLimit = 40;
+  String result =  "";
   boolean selected = false;
 
   SearchBar() {
@@ -9,11 +10,11 @@ class SearchBar extends Widget {
   }
 
   SearchBar(float x, float y, float width, float height) {
-    this(x, y, width, height, color(128), null);
+    this(x, y, width, height, color(BUTTON_COLOR), null);
   }
 
   SearchBar(float x, float y, float width, float height, Widget parent) {
-    this(x, y, width, height, color(128), parent);
+    this(x, y, width, height, color(BUTTON_COLOR), parent);
   }
 
   SearchBar(float x, float y, float width, float height, color widgetColor) {
@@ -34,7 +35,7 @@ class SearchBar extends Widget {
     super.draw();
     label.setLabel(originalLabel);
   }
-
+  
   TextWidget getLabel() {
     TextWidget label = (TextWidget) getChild(0);
     return label;
@@ -42,14 +43,15 @@ class SearchBar extends Widget {
 
   void onClick(int mouseX, int mouseY) {
     if ( isTouching(mouseX, mouseY) ) {
+      word = "";
       selected = true;
-      setColor(255);
+      setColor(BG_COLOR);
       setSelectedBorderColor(0);
       setDefaultBorderColor(255);
       getLabel().setColor(0);
     } else {
       selected = false;
-      setColor(0);
+      setColor(BUTTON_COLOR);
       getLabel().setColor(255);
       setSelectedBorderColor(255);
       setDefaultBorderColor(0);
@@ -58,22 +60,31 @@ class SearchBar extends Widget {
 
   void onKeyPressed(char keyValue) {
     if ( selected ) {
+      
       if ( keyValue == BACKSPACE ) {
         if ( insideSearchBar.size() > 0 ) {
           insideSearchBar.remove(insideSearchBar.size()-1);
         }
-      } else {
-        if ( insideSearchBar.size() < textLimit
+      } else { if ( insideSearchBar.size() < textLimit
           && (keyValue <= 'Z' && keyValue >= 'A'
-          || keyValue <= 'z' && keyValue >= 'a') )
+          || keyValue <= 'z' && keyValue >= 'a' 
+          || keyValue <= '9' && keyValue >= '0') )
           insideSearchBar.add(String.valueOf(keyValue));
+          word = word + String.valueOf(keyValue);
       }
       String label = "";
       for ( int i = 0; i < insideSearchBar.size(); i++ ) {
         label += insideSearchBar.get(i);
       }
+
       TextWidget text = getLabel();
       text.setLabel(label);
     }
+     
   }
+  
+  String getResult(){
+    return word;
+  }
+  
 }

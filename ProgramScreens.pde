@@ -3,6 +3,7 @@ class MenuScreen extends Screen {
   final int LOGOX = SCREENX/2-250;
   final int LOGOY = SCREENY/2-280;
   final int TEXT_START = 175;
+  final int buttonMargin = 25;
 
   TextWidget title;
   Button mapButton, searchButton, overviewButton;
@@ -14,45 +15,42 @@ class MenuScreen extends Screen {
     String pcName = System.getProperty("user.name");
 
     totalFlights = dataFile.getTotal();
-    String totalFlightsString = Integer.toString(totalFlights);
-    String newString = "";
-
-    // getting fancy number with commas)
-    for ( int i = totalFlightsString.length(); i > 3; i -= 3 ) {
-      String cut = totalFlightsString.substring(totalFlightsString.length()-3, totalFlightsString.length());
-      totalFlightsString = totalFlightsString.substring(0, totalFlightsString.length()-3);
-      newString =  "," + cut + newString;
-    }
-    newString = totalFlightsString + newString;
+    String newString = fancyNumber(totalFlights);
     title = new TextWidget("", "Welcome, " + pcName
-      + ". \nThere have been " + newString + " flight in the past month."
+      + ". \nThere have been " + newString + " flights in the past month."
       + "\nPlease see available options below.", 32, 10, TEXT_START, SCREENX, 256);
     title.setAlign(CENTER);
 
-    mapButton = new Button(0, SCREENY-buttonHeight, SCREENX/2-1, buttonHeight);
-    mapButton.setLabel("Interactive Map");
-    mapButton.setLabelSize(64);
-    mapButton.setAlign(CENTER);
-    mapButton.moveLabel(0, -10);
-    mapButton.moveLabel(0, 0);
-    mapButton.setLabelColor(TEXT_COLOR);
-    mapButton.setEvent(GLOBAL_EVENT_MAP_SCREEN);
+    
+    
+    int buttonCount = 3;
+    int freeSpace = SCREENX - (buttonCount+1)*buttonMargin;
+    int buttonWidth = freeSpace/buttonCount;
 
-    searchButton = new Button(SCREENX/2, SCREENY-buttonHeight, SCREENX/2-1, buttonHeight);
-    searchButton.setLabel("Search Data");
-    searchButton.setLabelSize(64);
+    searchButton = new Button(buttonMargin*1+(freeSpace/buttonCount)*0, SCREENY-(buttonHeight+buttonMargin), buttonWidth, buttonHeight);
+    searchButton.setLabel("Search");
+    searchButton.setLabelSize(48);
     searchButton.setAlign(CENTER);
     searchButton.moveLabel(0, -10);
     searchButton.setLabelColor(TEXT_COLOR);
     searchButton.setEvent(GLOBAL_EVENT_SEARCH_SCREEN);
 
-    overviewButton = new Button(SCREENX/2, SCREENY-(buttonHeight*2), SCREENX/2-1, buttonHeight);
-    overviewButton.setLabel("Data Overview");
-    overviewButton.setLabelSize(64);
+    overviewButton = new Button(buttonMargin*2+(freeSpace/buttonCount)*1, SCREENY-(buttonHeight+buttonMargin), buttonWidth, buttonHeight);
+    overviewButton.setLabel("Overview");
+    overviewButton.setLabelSize(48);
     overviewButton.setAlign(CENTER);
     overviewButton.moveLabel(0, -10);
     overviewButton.setLabelColor(TEXT_COLOR);
     overviewButton.setEvent(GLOBAL_EVENT_OVERVIEW_SCREEN);
+    
+    mapButton = new Button(buttonMargin*3+(freeSpace/buttonCount)*2, SCREENY-(buttonHeight+buttonMargin), buttonWidth, buttonHeight);
+    mapButton.setLabel("Map");
+    mapButton.setLabelSize(48);
+    mapButton.setAlign(CENTER);
+    mapButton.moveLabel(0, -10);
+    mapButton.moveLabel(0, 0);
+    mapButton.setLabelColor(TEXT_COLOR);
+    mapButton.setEvent(GLOBAL_EVENT_MAP_SCREEN);
 
 
     addWidget(title);
@@ -60,6 +58,7 @@ class MenuScreen extends Screen {
     addWidget(mapButton);
     addWidget(overviewButton);
   }
+  
 
   void draw() {
     super.draw();
@@ -73,9 +72,85 @@ class MenuScreen extends Screen {
 
 // ---------------- SEARCH ----------------
 class SearchScreen extends Screen {
-  SearchBar searchBar = new SearchBar(0, 0, SCREENX, 100);
+  
+  Button date = new Button(0, 0, 200, 100);
+  Button arrivalTime = new Button(0, 101, 200, 100);
+  Button searchButton = new Button(800, 0, 100, 100);
+  Button depTime = new Button(0, 202, 200, 100);
+  Button origin = new Button(0, 303, 200, 100);
+  Button destination = new Button(0, 404, 200, 100);
+  Button flightNumber = new Button(0, 505, 200, 100);
+  SearchBar searchBar = new SearchBar(201, 0, SCREENX - 300, 100);
+  Button backButton;
   SearchScreen() {
+    backButton = new Button(SCREENX-80-25, SCREENY-65, 80, 55);
+    backButton.setLabel("BACK");
+    backButton.setAlign(CENTER);
+    backButton.setLabelSize(24);
+    backButton.moveLabel(0, -3);
+    backButton.setEvent(GLOBAL_EVENT_MENU_SCREEN);
+    addWidget(backButton);
+    
+    
     addWidget(searchBar);
+    addWidget(searchButton);
+    searchButton.setEvent(SEARCH_EVENT_7);
+    
+    //date Button
+    addWidget(date);
+    date.setLabel("Date");
+    date.setLabelSize(35);
+    date.setAlign(CENTER);
+    date.moveLabel(0, -10);
+    date.moveLabel(0, 0);
+    date.setLabelColor(TEXT_COLOR);
+    date.setEvent(SEARCH_EVENT_1);
+    
+    // arrival time filter
+    addWidget(arrivalTime);
+    arrivalTime.setLabel("Arrival");
+    arrivalTime.setLabelSize(35);
+    arrivalTime.setAlign(CENTER);
+    arrivalTime.moveLabel(0, -10);
+    arrivalTime.moveLabel(0, 0);
+    arrivalTime.setLabelColor(TEXT_COLOR);
+    arrivalTime.setEvent(SEARCH_EVENT_2);
+    
+    addWidget(depTime);
+    depTime.setLabel("Departure");
+    depTime.setLabelSize(35);
+    depTime.setAlign(CENTER);
+    depTime.moveLabel(0, -10);
+    depTime.moveLabel(0, 0);
+    depTime.setLabelColor(TEXT_COLOR);
+    depTime.setEvent(SEARCH_EVENT_3);
+    
+    addWidget(origin);
+    origin.setLabel("Origin");
+    origin.setLabelSize(35);
+    origin.setAlign(CENTER);
+    origin.moveLabel(0, -10);
+    origin.moveLabel(0, 0);
+    origin.setLabelColor(TEXT_COLOR);
+    origin.setEvent(SEARCH_EVENT_4);
+    
+    addWidget(destination);
+    destination.setLabel("Destination");
+    destination.setLabelSize(35);
+    destination.setAlign(CENTER);
+    destination.moveLabel(0, -10);
+    destination.moveLabel(0, 0);
+    destination.setLabelColor(TEXT_COLOR);
+    destination.setEvent(SEARCH_EVENT_5);
+    
+    addWidget(flightNumber);
+    flightNumber.setLabel("Flight No.");
+    flightNumber.setLabelSize(35);
+    flightNumber.setAlign(CENTER);
+    flightNumber.moveLabel(0, -10);
+    flightNumber.moveLabel(0, 0);
+    flightNumber.setLabelColor(TEXT_COLOR);
+    flightNumber.setEvent(SEARCH_EVENT_6);
   }
 }
 
@@ -88,7 +163,7 @@ class MapScreen extends Screen {
   Widget info;
   String currentState;
   Boolean drag;
-  int total, diverted, cancelled;
+  String total, diverted, cancelled;
 
   MapScreen() {
     super();
@@ -102,6 +177,7 @@ class MapScreen extends Screen {
     backButton.setAlign(CENTER);
     backButton.setLabelSize(24);
     backButton.moveLabel(0, -3);
+    backButton.setEvent(GLOBAL_EVENT_MENU_SCREEN);
 
     stateLabel = new TextWidget("", "test", 48, SCREENX-600, SCREENY-65, 600, 65);
     stateLabel.move(-25, -6);
@@ -122,7 +198,7 @@ class MapScreen extends Screen {
 
 
 
-    backButton.setEvent(GLOBAL_EVENT_MENU_SCREEN);
+    
     addWidget(map);
     addWidget(backButton);
     addWidget(stateLabel);
@@ -149,9 +225,9 @@ class MapScreen extends Screen {
     }
     if ( state != null && !info.shown && map.isTouching(mouseX, mouseY)) {
       map.setActive(false);
-      total = dataFile.countTotalState(state);
-      diverted = dataFile.countDivertedState(state);
-      cancelled = dataFile.countCancelledState(state);
+      total = fancyNumber(dataFile.countTotalState(state));
+      diverted = fancyNumber(dataFile.countDivertedState(state));
+      cancelled = fancyNumber(dataFile.countCancelledState(state));
       infoLabel.setLabel(String.format(formatString, map.getFullStateName(state), total, diverted, cancelled));
       info.show();
     } else {
@@ -181,6 +257,7 @@ class OverviewScreen extends Screen {
   Button success = new Button(600, 50, 250, 100, color(0, 255, 0));
   Button divert = new Button(600, 250, 250, 100, color(255, 255, 0));
   Button cancel = new Button(600, 450, 250, 100, color(250, 0, 0));
+  Button backButton;
   PieChart thePieChart = new PieChart(flights,
     colors, 400, 300, 300);
   Button backButton = new Button(25, SCREENY-65, 80, 55);
@@ -217,6 +294,14 @@ class OverviewScreen extends Screen {
     reset.moveLabel(0, -3);
     reset.setEvent(4);
     addWidget(thePieChart);
+    
+    backButton = new Button(25, SCREENY-65, 80, 55);
+    backButton.setLabel("BACK");
+    backButton.setAlign(CENTER);
+    backButton.setLabelSize(24);
+    backButton.moveLabel(0, -3);
+    backButton.setEvent(GLOBAL_EVENT_MENU_SCREEN);
+    addWidget(backButton);
   }
 
   boolean handleEvent(int event) {
