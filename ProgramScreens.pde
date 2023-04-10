@@ -17,7 +17,7 @@ class MenuScreen extends Screen {
     totalFlights = dataFile.getTotal();
     String newString = fancyNumber(totalFlights);
     title = new TextWidget("", "Welcome, " + pcName
-      + ". \nThere have been " + newString + " flight in the past month."
+      + ". \nThere have been " + newString + " flights in the past month."
       + "\nPlease see available options below.", 32, 10, TEXT_START, SCREENX, 256);
     title.setAlign(CENTER);
 
