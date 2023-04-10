@@ -30,7 +30,7 @@ class MenuScreen extends Screen {
     title.setAlign(CENTER);
 
     mapButton = new Button(0, SCREENY-buttonHeight, SCREENX/2-1, buttonHeight);
-    mapButton.setLabel("View Map");
+    mapButton.setLabel("Interactive Map");
     mapButton.setLabelSize(64);
     mapButton.setAlign(CENTER);
     mapButton.moveLabel(0, -10);
@@ -81,11 +81,17 @@ class SearchScreen extends Screen {
 
 // ---------------- MAP ----------------
 class MapScreen extends Screen {
+  String formatString = "%s\nTotal Flights: %s\nDiverted: %s\nCancelled: %s\n";
+  MapWidget map;
+  Button backButton, closeInfoButton;
+  TextWidget stateLabel, infoLabel;
+  Widget info;
+  String currentState;
+  Boolean drag;
+  int total, diverted, cancelled;
+
   MapScreen() {
     super();
-<<<<<<< Updated upstream
-    addWidget(new MapWidget(0, 0, 200, 200, "usa-wikipedia.svg"));
-=======
     map = new MapWidget(25, 25, SCREENX-50, SCREENY-100, "usa-wikipedia.svg");
     map.setColor(color(0));
 
@@ -107,7 +113,6 @@ class MapScreen extends Screen {
     infoLabel.setLabel(formatString);
     info.addChild(infoLabel);
     info.hide();
-
     closeInfoButton = new Button(info.getWidth()-100, info.getHeight()-50, 90, 40);
     closeInfoButton.setLabel("BACK");
     closeInfoButton.setAlign(CENTER);
@@ -161,9 +166,9 @@ class MapScreen extends Screen {
 
   void onMouseDragged(int mouseX, int mouseY, int pmouseX, int pmouseY) {
     drag = true;
->>>>>>> Stashed changes
   }
 }
+
 
 // ---------------OVERVIEW----------
 class OverviewScreen extends Screen {
@@ -219,17 +224,17 @@ class OverviewScreen extends Screen {
     default:
       return true;
     case 1:
-    if(flights[0]==0) flights[0]=cancelledFlights;
+      if (flights[0]==0) flights[0]=cancelledFlights;
       else flights[0]=0;
       thePieChart.setup();
       return false;
     case 2:
-    if(flights[1]==0) flights[1]=notCancelled;
+      if (flights[1]==0) flights[1]=notCancelled;
       else flights[1]=0;
       thePieChart.setup();
       return false;
     case 3:
-      if(flights[2]==0) flights[2]=diverted;
+      if (flights[2]==0) flights[2]=diverted;
       else flights[2]=0;
       thePieChart.setup();
       return false;
