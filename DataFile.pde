@@ -116,6 +116,20 @@ class DataFile {
       return -1;
     }
   }
+  
+  int countTotalState(String state) {
+    try {
+      String sql = "SELECT COUNT(" + ORIGIN_STATE_ABBREVIATION + ")"
+        + "AS total FROM flights WHERE (" + ORIGIN_STATE_ABBREVIATION + " = \"" + state + "\" OR " +
+        DESTINATION_STATE_ABBREVIATION + " = \"" + state + "\")";
+      ResultSet rs = s.executeQuery(sql);
+      return rs.getInt("total");
+    }
+    catch ( SQLException e ) {
+      handleSQLException(e);
+      return -1;
+    }  
+  }
 
   int countDivertedState(String state) {
     try {
