@@ -22,6 +22,7 @@ void settings() {
 
 void setup() {
   RG.init(this);
+  RG.ignoreStyles(true);
   loadCounter = 0;
   currentJob = "";
   search = new SearchBar();
@@ -131,13 +132,14 @@ void mousePressed() {
     break;
   case SEARCH_EVENT_2:
     activeScreen = searchScreen;
+    break;
   case GLOBAL_EVENT_OVERVIEW_SCREEN:
     transition(overviewScreen, RIGHT);
     break;
   case SEARCH_EVENT_7:
     activeScreen = searchScreen;
     print(search.getResult());
-    
+    break;
   case GLOBAL_EVENT_NULL:
     break;
   }
@@ -173,6 +175,13 @@ void keyPressed() {
   activeScreen.keyPressed(key);
 }
 
+void mouseWheel(MouseEvent event) {
+  if ( !ready ) {
+    return;
+  }
+  activeScreen.mouseWheel(event.getCount());
+}
+
 void mouseReleased() {
   if ( !ready ) {
     return;
@@ -189,6 +198,9 @@ void setUpScreens() {
 
   currentJob = "SearchScreen";
   searchScreen = new SearchScreen();
+  
+  currentJob = "OverviewScreen";
+  overviewScreen = new OverviewScreen();
 
   currentJob = "MapScreen";
   mapScreen = new MapScreen();

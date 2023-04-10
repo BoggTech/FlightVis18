@@ -3,7 +3,7 @@
 // Nothing interesting, just a playground for testing widgets.
 
 // DEBUG SCREEN 1
-class DebugScreen extends Screen {
+/*class DebugScreen extends Screen {
   final int EVENT_BUTTON = 1;
   TextWidget pieChartText, fpsText;
   
@@ -160,7 +160,7 @@ class DebugScreen2 extends Screen {
       return true;
     }
   }
-}
+}*/
 
 /*class SearchScreen extends Screen {
   SearchBar searchBar = new SearchBar(0, 0, SCREENX, 100);

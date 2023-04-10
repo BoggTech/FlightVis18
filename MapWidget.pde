@@ -6,28 +6,69 @@ class MapWidget extends Widget {
   final float MAX_SCALE = 2;
   RShape mask;
   String[] stateAbbreviations;
-  StateWidget selectedState;
-  StateWidget[] states;
+  String[] fullStateNames = {"Alabama", "Alaska", "Arizona", "Arkansas", "California", "Colorado", "Connecticut", "Delaware", "Florida", "Georgia", "Hawaii",
+    "Idaho", "Illinois", "Indiana", "Iowa", "Kansas", "Kentucky", "Louisiana", "Maine", "Maryland", "Massachusetts", "Michigan", "Minnesota", "Mississippi",
+    "Missouri", "Montana", "Nebraska", "Nevada", "New Hampshire", "New Jersey", "New Mexico", "New York", "North Carolina", "North Dakota", "Ohio", "Oklahoma",
+    "Oregon", "Pennsylvania", "Rhode Island", "South Carolina", "South Dakota", "Tennessee", "Texas", "Utah", "Vermont", "Virginia", "Washington", "West Virginia",
+    "Wisconsin", "Wyoming"};
+
+  RShape originalMap;
   RShape map;
+  RShape maskedMap;
+  boolean changes;
+  String selectedState;
+  boolean active;
+
+  float mapCenterX;
+  float mapCenterY;
+  int max_x;
+  int max_y;
+
+  float scale;
 
   color selectedColor;
   color defaultColor;
   MapWidget(int x, int y, int width, int height, String mapFile) {
+    changes = false;
     setX(x);
     setY(y);
     setWidth(width);
     setHeight(height);
-    
-    map = RG.loadShape(mapFile);
+    originalMap = RG.loadShape(mapFile);
+    max_x = width;
+    max_y = height;
+    active = true;
+
+    // position + scale
+    scale = 1;
+    float xDifference = width-originalMap.width;
+    float yDifference = height-originalMap.height;
+
+    float differencePercent;
+
+    differencePercent = getHeight()/originalMap.height;
+    originalMap.translate(getEffectiveX()+xDifference/2, getEffectiveY()+yDifference/2);
+    originalMap.scale(differencePercent, getEffectiveX()+getWidth()/2, getEffectiveY()+getHeight()/2);
+
+
+    originalMap.setFill(color(0));
+
+    map = new RShape(originalMap);
+    calculateCenterPoint();
+
+    mask = RShape.createRectangle(getEffectiveX(), getEffectiveY(), width, height);
+
     String[] abbr = new String[]{"AL", "AK", "AZ", "AR", "CA", "CO", "CT", "DE", "FL", "GA", "HI", "ID", "IL", "IN", "IA", "KS", "KY", "LA", "ME", "MD", "MA", "MI",
       "MN", "MS", "MO", "MT", "NE", "NV", "NH", "NJ", "NM", "NY", "NC", "ND", "OH", "OK", "OR", "PA", "RI", "SC", "SD", "TN", "TX", "UT", "VT", "VA", "WA",
       "WV", "WI", "WY"};
     stateAbbreviations = abbr;
-    
+    selectedState = null;
+
     for ( int i = 0; i < stateAbbreviations.length; i++ ) {
       String abbrev = stateAbbreviations[i];
-      addChild(new StateWidget(map.getChild(abbrev), abbrev));
+      map.getChild(abbrev).setFill(color(0));
     }
+    mask();
   }
   
   void setActive(Boolean thing) {

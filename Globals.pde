@@ -13,6 +13,8 @@ final int GLOBAL_EVENT_DEBUG_2 = -4;
 final int GLOBAL_EVENT_DEBUG_3 = -5;
 final int GLOBAL_EVENT_MAP_SCREEN = -6;
 final int GLOBAL_EVENT_SEARCH_SCREEN = -7;
+final int GLOBAL_EVENT_MENU_SCREEN = -8;
+final int GLOBAL_EVENT_OVERVIEW_SCREEN = -9;
 
 
 final int SCREENX = 900;

@@ -6,7 +6,7 @@ class MenuScreen extends Screen {
   final int buttonMargin = 25;
 
   TextWidget title;
-  Button mapButton, searchButton;
+  Button mapButton, searchButton, overviewButton;
   final int buttonHeight = 100;
   int totalFlights;
   MenuScreen() {
@@ -56,6 +56,7 @@ class MenuScreen extends Screen {
     addWidget(title);
     addWidget(searchButton);
     addWidget(mapButton);
+    addWidget(overviewButton);
   }
   
 
@@ -80,7 +81,17 @@ class SearchScreen extends Screen {
   Button destination = new Button(0, 404, 200, 100);
   Button flightNumber = new Button(0, 505, 200, 100);
   SearchBar searchBar = new SearchBar(201, 0, SCREENX - 300, 100);
+  Button backButton;
   SearchScreen() {
+    backButton = new Button(SCREENX-80-25, SCREENY-65, 80, 55);
+    backButton.setLabel("BACK");
+    backButton.setAlign(CENTER);
+    backButton.setLabelSize(24);
+    backButton.moveLabel(0, -3);
+    backButton.setEvent(GLOBAL_EVENT_MENU_SCREEN);
+    addWidget(backButton);
+    
+    
     addWidget(searchBar);
     addWidget(searchButton);
     searchButton.setEvent(SEARCH_EVENT_7);
