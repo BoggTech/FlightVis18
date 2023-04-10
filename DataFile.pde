@@ -5,6 +5,7 @@ import java.sql.*;
 class DataFile {
   Connection c;
   Statement s;
+  SearchBar  search = new SearchBar();
   DataFile(String fileName) {
     c = null;
     s = null;
@@ -62,7 +63,7 @@ class DataFile {
       return -1;
     }
   }
-
+  
   int countDivertedDestState(String state) {
     try {
       String sql = "SELECT COUNT(" + DESTINATION_STATE_ABBREVIATION + ")"
@@ -115,20 +116,6 @@ class DataFile {
       return -1;
     }
   }
-  
-  int countTotalState(String state) {
-    try {
-      String sql = "SELECT COUNT(" + ORIGIN_STATE_ABBREVIATION + ")"
-        + "AS total FROM flights WHERE (" + ORIGIN_STATE_ABBREVIATION + " = \"" + state + "\" OR " +
-        DESTINATION_STATE_ABBREVIATION + " = \"" + state + "\")";
-      ResultSet rs = s.executeQuery(sql);
-      return rs.getInt("total");
-    }
-    catch ( SQLException e ) {
-      handleSQLException(e);
-      return -1;
-    }
-  }
 
   int countDivertedState(String state) {
     try {
@@ -163,7 +150,7 @@ class DataFile {
       return -1;
     }
   }
-
+  
   private float getAverage(String query) {
     try {
       String sql = "SELECT AVG(" + query + ") AS total FROM flights";

@@ -73,9 +73,4 @@ class TextWidget extends Widget {
     fill(getColor());
     text(text, getEffectiveX(), getEffectiveY(), getWidth(), getHeight());
   }
-  
-  void move(int x, int y) {
-    setX(getX() + x);
-    setY(getY() + y);
-  }
 }

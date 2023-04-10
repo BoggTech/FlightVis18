@@ -4,13 +4,15 @@ public class PieChart extends Widget {
   //index will represent data such as number of flights.
   private int diameter;
   float[] data;
+  String[] labels;
   color[]colors;
   private float sum;
 
-  PieChart(float[]data, color[] colors, int diameter, int ypos, int xpos) {
+  PieChart(float[]data, String[] labels, color[] colors, int diameter, int ypos, int xpos) {
     super(xpos, ypos, 0, 0);
     this.diameter=diameter;
     this.data=data;
+    this.labels=labels;
     this.colors = colors;
     sum=0;
     setup();

@@ -18,19 +18,18 @@ class Widget {
   private ArrayList children;
   private int id;
   private float rotation;
-  private boolean shown;
   private int event;
 
   Widget() {
-    this(0, 0, 0, 0, color(BG_COLOR), null);
+    this(0, 0, 0, 0, color(0), null);
   }
 
   Widget(float x, float y, float width, float height) {
-    this(x, y, width, height, color(BG_COLOR), null);
+    this(x, y, width, height, color(128), null);
   }
 
   Widget(float x, float y, float width, float height, Widget parent) {
-    this(x, y, width, height, color(BG_COLOR), parent);
+    this(x, y, width, height, color(128), parent);
   }
 
   Widget(float x, float y, float width, float height, color widgetColor) {
@@ -38,7 +37,6 @@ class Widget {
   }
 
   Widget(float x, float y, float width, float height, color widgetColor, Widget parent) {
-    shown = true;
     children = new ArrayList<>();
     this.x = x;
     this.y = y;
@@ -68,14 +66,6 @@ class Widget {
       Widget widget = (Widget) children.get(i);
       widget.updatePosition();
     }
-  }
-  
-  void show() {
-    shown = true;
-  }
-  
-  void hide() {
-    shown = false;
   }
 
   float getX() {
@@ -117,15 +107,15 @@ class Widget {
   void setBorderColor(color borderColor) {
     this.borderColor = borderColor;
   }
-
+  
   color getDefaultBorderColor() {
     return defaultBorderColor;
   }
-
+  
   color getSelectedBorderColor() {
     return selectedBorderColor;
   }
-
+  
   color getBorderColor() {
     return borderColor;
   }
@@ -206,7 +196,7 @@ class Widget {
   private void setId(int id) {
     this.id = id;
   }
-
+  
   // adds a child to list of child widgets; handles replacing parent, etc
   void addChild(Widget child) {
     if ( children.size() > child.getId() && children.get(child.getId()) == child || child == this ) {
@@ -265,15 +255,15 @@ class Widget {
   }
 
   void mouseDragged(int mouseX, int mouseY, int pmouseX, int pmouseY) {
-    onMouseDragged(mouseX, mouseY, pmouseX, pmouseY);
+    onDrag(mouseX, mouseY, pmouseX, pmouseY);
     for ( int i = 0; i < getChildrenLength(); i++ ) {
       Widget widget = (Widget) getChild(i);
       widget.mouseDragged(mouseX, mouseY, pmouseX, pmouseY);
     }
   }
 
-  void onMouseDragged(int mouseX, int mouseY, int pmouseX, int pmouseY) {
-    // i just shouldve named it this
+  void onDrag(int mouseX, int mouseY, int pmouseX, int pmouseY) {
+    // boring
   }
 
   void mouseReleased(int mouseX, int mouseY) {
@@ -287,17 +277,6 @@ class Widget {
   void onMouseReleased(int mouseX, int mouseY) {
   }
 
-  void mouseWheel(int wheel) {
-    onMouseWheel(wheel);
-    for ( int i = 0; i < getChildrenLength(); i++ ) {
-      Widget widget = (Widget) getChild(i);
-      widget.mouseWheel(wheel);
-    }
-  }
-
-  void onMouseWheel(int wheel) {
-  }
-
   void keyPressed(char keyValue) {
     onKeyPressed(keyValue);
     for ( int i = 0; i < getChildrenLength(); i++ ) {
@@ -309,11 +288,7 @@ class Widget {
   void onKeyPressed(char keyValue) {
   }
 
-  // draw w/o children
-  void drawThis() {
-    if ( !shown ) {
-      return;
-    }
+  void draw() {
     fill(widgetColor);
     pushMatrix();
     translate(effectiveX+width/2, effectiveY+height/2);
@@ -322,16 +297,10 @@ class Widget {
     rect(-width/2, -height/2, width, height);
     popMatrix();
     borderColor = defaultBorderColor;
-  }
-  void draw() {
-    drawThis();
     drawChildren();
   }
 
   void drawChildren() {
-    if ( !shown ) {
-      return;
-    }
     for ( int i = 0; i < children.size(); i++ ) {
       Widget widget = (Widget) children.get(i);
       widget.draw();
