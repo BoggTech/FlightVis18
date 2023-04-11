@@ -4,8 +4,6 @@ Screen nextScreen, menuScreen, mapScreen, searchScreen, screen, screen2, screen3
 DataFile dataFile;
 boolean ready = false;
 boolean printData = false;
-String dataAsString = "";
-ArrayList<FlightObject> modifiedObjects = new ArrayList<>();
 boolean error = false;
 boolean transition, left;
 PShape gear, logo, warning;
