@@ -20,8 +20,8 @@ class MenuScreen extends Screen {
       + "\nPlease see available options below.", 32, 10, TEXT_START, SCREENX, 256);
     title.setAlign(CENTER);
 
-    
-    
+
+
     int buttonCount = 3;
     int freeSpace = SCREENX - (buttonCount+1)*buttonMargin;
     int buttonWidth = freeSpace/buttonCount;
@@ -41,7 +41,7 @@ class MenuScreen extends Screen {
     overviewButton.moveLabel(0, -10);
     overviewButton.setLabelColor(TEXT_COLOR);
     overviewButton.setEvent(GLOBAL_EVENT_OVERVIEW_SCREEN);
-    
+
     mapButton = new Button(buttonMargin*3+(freeSpace/buttonCount)*2, SCREENY-(buttonHeight+buttonMargin), buttonWidth, buttonHeight);
     mapButton.setLabel("Map");
     mapButton.setLabelSize(48);
@@ -57,7 +57,7 @@ class MenuScreen extends Screen {
     addWidget(mapButton);
     addWidget(overviewButton);
   }
-  
+
 
   void draw() {
     super.draw();
@@ -71,7 +71,7 @@ class MenuScreen extends Screen {
 
 // ---------------- SEARCH ----------------
 class SearchScreen extends Screen {
-  
+
   Button date = new Button(0, 0, 200, 100);
   Button arrivalTime = new Button(0, 101, 200, 100);
   Button searchButton = new Button(800, 0, 100, 100);
@@ -89,12 +89,12 @@ class SearchScreen extends Screen {
     backButton.moveLabel(0, -3);
     backButton.setEvent(GLOBAL_EVENT_MENU_SCREEN);
     addWidget(backButton);
-    
-    
+
+
     addWidget(searchBar);
     addWidget(searchButton);
     searchButton.setEvent(SEARCH_EVENT_7);
-    
+
     //date Button
     addWidget(date);
     date.setLabel("Date");
@@ -104,7 +104,7 @@ class SearchScreen extends Screen {
     date.moveLabel(0, 0);
     date.setLabelColor(TEXT_COLOR);
     date.setEvent(SEARCH_EVENT_1);
-    
+
     // arrival time filter
     addWidget(arrivalTime);
     arrivalTime.setLabel("Arrival");
@@ -114,7 +114,7 @@ class SearchScreen extends Screen {
     arrivalTime.moveLabel(0, 0);
     arrivalTime.setLabelColor(TEXT_COLOR);
     arrivalTime.setEvent(SEARCH_EVENT_2);
-    
+
     addWidget(depTime);
     depTime.setLabel("Departure");
     depTime.setLabelSize(35);
@@ -123,7 +123,7 @@ class SearchScreen extends Screen {
     depTime.moveLabel(0, 0);
     depTime.setLabelColor(TEXT_COLOR);
     depTime.setEvent(SEARCH_EVENT_3);
-    
+
     addWidget(origin);
     origin.setLabel("Origin");
     origin.setLabelSize(35);
@@ -132,7 +132,7 @@ class SearchScreen extends Screen {
     origin.moveLabel(0, 0);
     origin.setLabelColor(TEXT_COLOR);
     origin.setEvent(SEARCH_EVENT_4);
-    
+
     addWidget(destination);
     destination.setLabel("Destination");
     destination.setLabelSize(35);
@@ -141,7 +141,7 @@ class SearchScreen extends Screen {
     destination.moveLabel(0, 0);
     destination.setLabelColor(TEXT_COLOR);
     destination.setEvent(SEARCH_EVENT_5);
-    
+
     addWidget(flightNumber);
     flightNumber.setLabel("Flight No.");
     flightNumber.setLabelSize(35);
@@ -150,6 +150,17 @@ class SearchScreen extends Screen {
     flightNumber.moveLabel(0, 0);
     flightNumber.setLabelColor(TEXT_COLOR);
     flightNumber.setEvent(SEARCH_EVENT_6);
+  }
+
+  boolean handleEvent(int event) {
+    switch ( event ) {
+    case SEARCH_EVENT_7:
+      activeScreen = searchScreen;
+      print(search.getResult());
+      return false;
+    default:
+      return true;
+    }
   }
 }
 
@@ -160,6 +171,7 @@ class MapScreen extends Screen {
   Button backButton, closeInfoButton;
   TextWidget stateLabel, infoLabel;
   Widget info;
+  PieChart pieChart;
   String currentState;
   Boolean drag;
   String total, diverted, cancelled;
@@ -195,9 +207,16 @@ class MapScreen extends Screen {
     closeInfoButton.moveLabel(0, -3);
     info.addChild(closeInfoButton);
 
+    // pie chart on infobox
+    float[] data = {1, 1, 1};
+    color[] colors = {color(255, 0, 0), color(0, 255, 0), color(255, 255, 0)};
+    pieChart = new PieChart(data, colors, 250, 350, 250);
+    info.addChild(pieChart);
 
 
-    
+
+
+
     addWidget(map);
     addWidget(backButton);
     addWidget(stateLabel);
@@ -224,10 +243,17 @@ class MapScreen extends Screen {
     }
     if ( state != null && !info.shown && map.isTouching(mouseX, mouseY)) {
       map.setActive(false);
-      total = fancyNumber(dataFile.countTotalState(state));
-      diverted = fancyNumber(dataFile.countDivertedState(state));
-      cancelled = fancyNumber(dataFile.countCancelledState(state));
+      int totalInt = dataFile.countTotalState(state);
+      int divertedInt = dataFile.countDivertedState(state);
+      int cancelledInt = dataFile.countCancelledState(state);
+      total = fancyNumber(totalInt);
+      diverted = fancyNumber(divertedInt);
+      cancelled = fancyNumber(cancelledInt);
       infoLabel.setLabel(String.format(formatString, map.getFullStateName(state), total, diverted, cancelled));
+      pieChart.data[0] = cancelledInt;
+      pieChart.data[1] = totalInt - (divertedInt + cancelledInt);
+      pieChart.data[2] = divertedInt;
+      pieChart.setup();
       info.show();
     } else {
       Button button = (Button) info.getChild(1);
@@ -292,7 +318,7 @@ class OverviewScreen extends Screen {
     reset.moveLabel(0, -3);
     reset.setEvent(4);
     addWidget(thePieChart);
-    
+
     backButton = new Button(25, SCREENY-65, 80, 55);
     backButton.setLabel("BACK");
     backButton.setAlign(CENTER);

@@ -138,24 +138,24 @@ class DataFile {
       ArrayList<String[]> returnValue = new ArrayList<String[]>();
       while ( rs.next() ) {
         String[] strings = {
-          rs.getString("rowid"),
-          rs.getString(FLIGHT_DATE),
-          rs.getString(CARRIER),
-          rs.getString(CARRIER_ID),
-          rs.getString(ORIGIN),
-          rs.getString(ORIGIN_CITY),
-          rs.getString(ORIGIN_STATE_ABBREVIATION),
-          rs.getString(ORIGIN_WORLD_AREA_CODE),
-          rs.getString(DESTINATION),
-          rs.getString(DESTINATION_CITY),
-          rs.getString(DESTINATION_STATE_ABBREVIATION),
-          rs.getString(DESTINATION_WORLD_AREA_CODE),
-          rs.getString(SCHEDULED_DEPARTURE),
-          rs.getString(DEPARTURE),
-          rs.getString(SCHEDULED_ARRIVAL),
-          rs.getString(CANCELLED),
-          rs.getString(DIVERTED),
-          rs.getString(DISTANCE)
+          rs.getString("rowid"),                        // 0
+          rs.getString(FLIGHT_DATE),                    // 1
+          rs.getString(CARRIER),                        // 2
+          rs.getString(CARRIER_ID),                     // 3
+          rs.getString(ORIGIN),                         // 4
+          rs.getString(ORIGIN_CITY),                    // 5
+          rs.getString(ORIGIN_STATE_ABBREVIATION),      // 6
+          rs.getString(ORIGIN_WORLD_AREA_CODE),         // 7
+          rs.getString(DESTINATION),                    // 8
+          rs.getString(DESTINATION_CITY),               // 9
+          rs.getString(DESTINATION_STATE_ABBREVIATION), // 10
+          rs.getString(DESTINATION_WORLD_AREA_CODE),    // 11
+          rs.getString(SCHEDULED_DEPARTURE),            // 12
+          rs.getString(DEPARTURE),                      // 13
+          rs.getString(SCHEDULED_ARRIVAL),              // 14
+          rs.getString(CANCELLED),                      // 15
+          rs.getString(DIVERTED),                       // 16
+          rs.getString(DISTANCE)                        // 17
           };
           
           returnValue.add(strings);
