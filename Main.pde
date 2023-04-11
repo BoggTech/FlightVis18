@@ -2,9 +2,6 @@ import geomerative.*;
 
 Screen nextScreen, menuScreen, mapScreen, searchScreen, screen, screen2, screen3, overviewScreen, activeScreen;
 DataFile dataFile;
-SearchBar search;
-String word = "";
-boolean searchOn = false;
 boolean ready = false;
 boolean printData = false;
 String dataAsString = "";
@@ -25,7 +22,6 @@ void setup() {
   RG.ignoreStyles(true);
   loadCounter = 0;
   currentJob = "";
-  search = new SearchBar();
   gear = loadShape("gear.svg");
   logo = loadShape("logothing.svg");
   gear.setFill(TEXT_COLOR);
@@ -39,24 +35,36 @@ void setup() {
 void draw() {
   background(BG_COLOR);
   if ( !ready ) {
-    background(BG_COLOR);
-    textSize(32);
-    textAlign(CENTER, CENTER);
-    loadCounter++;
-    textLeading(30);
-    fill(TEXT_COLOR);
-    text("Loading " + currentJob + "..."
-      + "\n" + round(loadCounter/60), SCREENX/2, SCREENY/2+96);
-    pushMatrix();
-    noStroke();
-    translate(SCREENX/2, SCREENY/2);
-    rotate((((float) frameCount)/15));
-    shape(gear, -50, -50, 100, 100);
-    popMatrix();
-    textAlign(LEFT);
+    loadingSpin();
     return;
   } else if ( transition ) {
-    if ( !left ) {
+    transitionDraw();
+    return;
+  }
+  activeScreen.checkCollisions(mouseX, mouseY);
+  activeScreen.draw();
+}
+
+void loadingSpin() {
+  background(BG_COLOR);
+  textSize(32);
+  textAlign(CENTER, CENTER);
+  loadCounter++;
+  textLeading(30);
+  fill(TEXT_COLOR);
+  text("Loading " + currentJob + "..."
+    + "\n" + round(loadCounter/60), SCREENX/2, SCREENY/2+96);
+  pushMatrix();
+  noStroke();
+  translate(SCREENX/2, SCREENY/2);
+  rotate((((float) frameCount)/15));
+  shape(gear, -50, -50, 100, 100);
+  popMatrix();
+  textAlign(LEFT);
+}
+
+void transitionDraw() {
+  if ( !left ) {
       activeScreen.setX(activeScreen.getX()-transitionSpeed);
       nextScreen.setX(nextScreen.getX()-transitionSpeed);
       activeScreen.draw();
@@ -81,18 +89,6 @@ void draw() {
         nextScreen = null;
       }
     }
-    return;
-  }
-  activeScreen.checkCollisions(mouseX, mouseY);
-  activeScreen.draw();
-  if (searchOn == true) {
-    fill(255);
-    search.draw();
-  } else {
-    fill(TEXT_COLOR);
-    textSize(17);
-    text(dataAsString, 450, 125);
-  }
 }
 
 void mousePressed() {
