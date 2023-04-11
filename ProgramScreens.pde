@@ -151,12 +151,17 @@ class SearchScreen extends Screen {
     flightNumber.setLabelColor(TEXT_COLOR);
     flightNumber.setEvent(SEARCH_EVENT_6);
   }
-
+  
+  void onKeyPressed(char keyValue) {
+    if ( keyValue == ENTER && searchBar.selected ) {
+      handleEvent(SEARCH_EVENT_7);
+    }
+  }
+  
   boolean handleEvent(int event) {
     switch ( event ) {
     case SEARCH_EVENT_7:
-      activeScreen = searchScreen;
-      print(search.getResult());
+      println(searchBar.getResult());
       return false;
     default:
       return true;

@@ -43,7 +43,6 @@ class SearchBar extends Widget {
 
   void onClick(int mouseX, int mouseY) {
     if ( isTouching(mouseX, mouseY) ) {
-      word = "";
       selected = true;
       setColor(BG_COLOR);
       setSelectedBorderColor(0);
@@ -70,7 +69,6 @@ class SearchBar extends Widget {
           || keyValue <= '9' && keyValue >= '0'
           || keyValue == ' ' ) {
           insideSearchBar.add(String.valueOf(keyValue));
-          word = word + String.valueOf(keyValue);
       }
       String label = "";
       for ( int i = 0; i < insideSearchBar.size(); i++ ) {
@@ -83,7 +81,11 @@ class SearchBar extends Widget {
   }
   
   String getResult(){
-    return word;
+    String result = "";
+    for ( int i = 0; i < insideSearchBar.size(); i++ ) {
+      result += insideSearchBar.get(i);
+    }
+    return result;
   }
   
 }
