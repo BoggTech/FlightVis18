@@ -23,7 +23,7 @@ class SearchBar extends Widget {
 
   SearchBar(float x, float y, float width, float height, color widgetColor, Widget parent) {
     super(x, y, width, height, widgetColor, null);
-    addChild(new TextWidget((int) x, (int) y, (int) width, (int) 1200));
+    addChild(new TextWidget(15, 0, (int) width-10, 1200));
   }
 
   void draw() {
@@ -60,15 +60,15 @@ class SearchBar extends Widget {
 
   void onKeyPressed(char keyValue) {
     if ( selected ) {
-      
       if ( keyValue == BACKSPACE ) {
         if ( insideSearchBar.size() > 0 ) {
           insideSearchBar.remove(insideSearchBar.size()-1);
         }
-      } else { if ( insideSearchBar.size() < textLimit
+      } else if ( insideSearchBar.size() < textLimit
           && (keyValue <= 'Z' && keyValue >= 'A'
-          || keyValue <= 'z' && keyValue >= 'a' 
-          || keyValue <= '9' && keyValue >= '0') )
+          || keyValue <= 'z' && keyValue >= 'a') 
+          || keyValue <= '9' && keyValue >= '0'
+          || keyValue == ' ' ) {
           insideSearchBar.add(String.valueOf(keyValue));
           word = word + String.valueOf(keyValue);
       }
@@ -80,7 +80,6 @@ class SearchBar extends Widget {
       TextWidget text = getLabel();
       text.setLabel(label);
     }
-     
   }
   
   String getResult(){

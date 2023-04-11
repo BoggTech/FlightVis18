@@ -85,14 +85,13 @@ void draw() {
   }
   activeScreen.checkCollisions(mouseX, mouseY);
   activeScreen.draw();
-  if(searchOn == true){
+  if (searchOn == true) {
     fill(255);
     search.draw();
-  }
-  else{
+  } else {
     fill(TEXT_COLOR);
     textSize(17);
-    text(dataAsString , 450, 125);
+    text(dataAsString, 450, 125);
   }
 }
 
@@ -130,15 +129,8 @@ void mousePressed() {
   case GLOBAL_EVENT_SEARCH_SCREEN:
     transition(searchScreen, RIGHT);
     break;
-  case SEARCH_EVENT_2:
-    activeScreen = searchScreen;
-    break;
   case GLOBAL_EVENT_OVERVIEW_SCREEN:
     transition(overviewScreen, RIGHT);
-    break;
-  case SEARCH_EVENT_7:
-    activeScreen = searchScreen;
-    print(search.getResult());
     break;
   case GLOBAL_EVENT_NULL:
     break;
@@ -198,7 +190,7 @@ void setUpScreens() {
 
   currentJob = "SearchScreen";
   searchScreen = new SearchScreen();
-  
+
   currentJob = "OverviewScreen";
   overviewScreen = new OverviewScreen();
 
