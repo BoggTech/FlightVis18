@@ -11,7 +11,6 @@ class MenuScreen extends Screen {
   int totalFlights;
   MenuScreen() {
     super();
-
     String pcName = System.getProperty("user.name");
 
     totalFlights = dataFile.getTotal();

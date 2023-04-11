@@ -53,8 +53,8 @@ class DataFile {
   // return how many cancelled flights with this destination state
   int countCancelledDestState(String state) {
     try {
-      String sql = "SELECT COUNT(" + DESTINATION_STATE_ABBREVIATION + ")"
-        + "AS total FROM flights WHERE " + CANCELLED + "=\"1.00\" AND " + DESTINATION_STATE_ABBREVIATION + " = \"" + state + "\"";
+      String sql = String.format("SELECT COUNT(%s) AS total FROM flights WHERE %s=\"1.00\" AND %s = \"%s\"",
+        DESTINATION_STATE_ABBREVIATION, CANCELLED, DESTINATION_STATE_ABBREVIATION, state);
       ResultSet rs = s.executeQuery(sql);
       return rs.getInt("total");
     }
@@ -63,11 +63,11 @@ class DataFile {
       return -1;
     }
   }
-  
+
   int countDivertedDestState(String state) {
     try {
-      String sql = "SELECT COUNT(" + DESTINATION_STATE_ABBREVIATION + ")"
-        + "AS total FROM flights WHERE " + DIVERTED + "=\"1.00\" AND " + DESTINATION_STATE_ABBREVIATION + " = \"" + state + "\"";
+      String sql = String.format("SELECT COUNT(%s) AS total FROM flights WHERE %s=\"1.00\" AND %s = \"%s\"",
+        DESTINATION_STATE_ABBREVIATION, DIVERTED, DESTINATION_STATE_ABBREVIATION, state);
       ResultSet rs = s.executeQuery(sql);
       return rs.getInt("total");
     }
@@ -79,8 +79,8 @@ class DataFile {
 
   int countCancelledOriginState(String state) {
     try {
-      String sql = "SELECT COUNT(" + ORIGIN_STATE_ABBREVIATION + ")"
-        + "AS total FROM flights WHERE " + CANCELLED + "=\"1.00\" AND " + ORIGIN_STATE_ABBREVIATION + " = \"" + state + "\"";
+      String sql = String.format("SELECT COUNT(%s) AS total FROM flights WHERE %s=\"1.00\" AND %s = \"%s\"",
+        ORIGIN_STATE_ABBREVIATION, CANCELLED, ORIGIN_STATE_ABBREVIATION, state);
       ResultSet rs = s.executeQuery(sql);
       return rs.getInt("total");
     }
@@ -92,8 +92,8 @@ class DataFile {
 
   int countDivertedOriginState(String state) {
     try {
-      String sql = "SELECT COUNT(" + ORIGIN_STATE_ABBREVIATION + ")"
-        + "AS total FROM flights WHERE " + DIVERTED + "=\"1.00\" AND " + ORIGIN_STATE_ABBREVIATION + " = \"" + state + "\"";
+      String sql = String.format("SELECT COUNT(%s) AS total FROM flights WHERE %s=\"1.00\" AND %s = \"%s\"",
+        ORIGIN_STATE_ABBREVIATION, DIVERTED, ORIGIN_STATE_ABBREVIATION, state);
       ResultSet rs = s.executeQuery(sql);
       return rs.getInt("total");
     }
@@ -105,9 +105,8 @@ class DataFile {
 
   int countCancelledState(String state) {
     try {
-      String sql = "SELECT COUNT(" + ORIGIN_STATE_ABBREVIATION + ")"
-        + "AS total FROM flights WHERE " + CANCELLED + "=\"1.00\" AND (" + ORIGIN_STATE_ABBREVIATION + " = \"" + state + "\" OR " +
-        DESTINATION_STATE_ABBREVIATION + " = \"" + state + "\")";
+      String sql = String.format("SELECT COUNT(*) AS total FROM flights WHERE %s=\"1.00\" AND (%s = \"%s\" OR %s = \"%s\")",
+        CANCELLED, ORIGIN_STATE_ABBREVIATION, state, DESTINATION_STATE_ABBREVIATION, state);
       ResultSet rs = s.executeQuery(sql);
       return rs.getInt("total");
     }
@@ -116,26 +115,65 @@ class DataFile {
       return -1;
     }
   }
-  
+
   int countTotalState(String state) {
     try {
-      String sql = "SELECT COUNT(" + ORIGIN_STATE_ABBREVIATION + ")"
-        + "AS total FROM flights WHERE (" + ORIGIN_STATE_ABBREVIATION + " = \"" + state + "\" OR " +
-        DESTINATION_STATE_ABBREVIATION + " = \"" + state + "\")";
+      String sql = String.format("SELECT COUNT(*) AS total FROM flights WHERE (%s = \"%s\" OR %s = \"%s\")",
+        ORIGIN_STATE_ABBREVIATION, state, DESTINATION_STATE_ABBREVIATION, state);
       ResultSet rs = s.executeQuery(sql);
       return rs.getInt("total");
     }
     catch ( SQLException e ) {
       handleSQLException(e);
       return -1;
-    }  
+    }
+  }
+
+  String[][] getResults(int interval, int offset, String field, String query) {
+    try {
+      // SQL INJECTION BABEYYYYYYY WOOOOOOOOOOOOOO
+      String sql = String.format("SELECT ROWID, * FROM flights WHERE %s LIKE \"%%%s%%\" LIMIT %s OFFSET %s", field, query, interval, offset);
+      ResultSet rs = s.executeQuery(sql);
+      int i = 0;
+      ArrayList<String[]> returnValue = new ArrayList<String[]>();
+      while ( rs.next() ) {
+        String[] strings = {
+          rs.getString("rowid"),
+          rs.getString(FLIGHT_DATE),
+          rs.getString(CARRIER),
+          rs.getString(CARRIER_ID),
+          rs.getString(ORIGIN),
+          rs.getString(ORIGIN_CITY),
+          rs.getString(ORIGIN_STATE_ABBREVIATION),
+          rs.getString(ORIGIN_WORLD_AREA_CODE),
+          rs.getString(DESTINATION),
+          rs.getString(DESTINATION_CITY),
+          rs.getString(DESTINATION_STATE_ABBREVIATION),
+          rs.getString(DESTINATION_WORLD_AREA_CODE),
+          rs.getString(SCHEDULED_DEPARTURE),
+          rs.getString(DEPARTURE),
+          rs.getString(SCHEDULED_ARRIVAL),
+          rs.getString(CANCELLED),
+          rs.getString(DIVERTED),
+          rs.getString(DISTANCE)
+          };
+          
+          returnValue.add(strings);
+      }
+      String[][] stringArray = new String[returnValue.size()][17];
+      stringArray = returnValue.toArray(stringArray);
+      return stringArray;
+    }
+    catch (SQLException e ) {
+      handleSQLException(e);
+      return null;
+    }
   }
 
   int countDivertedState(String state) {
     try {
-      String sql = "SELECT COUNT(" + ORIGIN_STATE_ABBREVIATION + ")"
-        + "AS total FROM flights WHERE " + DIVERTED + "=\"1.00\" AND (" + ORIGIN_STATE_ABBREVIATION + " = \"" + state + "\" OR " +
-        DESTINATION_STATE_ABBREVIATION + " = \"" + state + "\")";
+      String sql = String.format("SELECT COUNT(*) AS total FROM flights WHERE %s=\"1.00\" AND (%s = \"%s\" OR %s = \"%s\")",
+        DIVERTED, ORIGIN_STATE_ABBREVIATION, state, DESTINATION_STATE_ABBREVIATION, state);
       ResultSet rs = s.executeQuery(sql);
       return rs.getInt("total");
     }
@@ -164,7 +202,7 @@ class DataFile {
       return -1;
     }
   }
-  
+
   private float getAverage(String query) {
     try {
       String sql = "SELECT AVG(" + query + ") AS total FROM flights";
