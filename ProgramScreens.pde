@@ -171,13 +171,14 @@ class SearchScreen extends Screen {
 
 // ---------------- MAP ----------------
 class MapScreen extends Screen {
-  String formatString = "%s\nTotal Flights: %s\nDiverted: %s\nCancelled: %s\n";
+  String formatString = "%s\nTotal Flights: %s (%.2f%%)\nDiverted: %s\nCancelled: %s\n";
   MapWidget map;
   Button backButton, closeInfoButton;
   TextWidget stateLabel, infoLabel;
   Widget info;
   PieChart pieChart;
   String currentState;
+  float totalFlights;
   Boolean drag;
   String total, diverted, cancelled;
 
@@ -185,7 +186,9 @@ class MapScreen extends Screen {
     super();
     map = new MapWidget(25, 25, SCREENX-50, SCREENY-100, "usa-wikipedia.svg");
     map.setColor(color(0));
-
+    
+    totalFlights = (float) dataFile.getTotal();
+    
     drag = false;
 
     backButton = new Button(25, SCREENY-65, 80, 55);
@@ -251,10 +254,11 @@ class MapScreen extends Screen {
       int totalInt = dataFile.countTotalState(state);
       int divertedInt = dataFile.countDivertedState(state);
       int cancelledInt = dataFile.countCancelledState(state);
+      float totalPercent = (float) totalInt / totalFlights;
       total = fancyNumber(totalInt);
       diverted = fancyNumber(divertedInt);
       cancelled = fancyNumber(cancelledInt);
-      infoLabel.setLabel(String.format(formatString, map.getFullStateName(state), total, diverted, cancelled));
+      infoLabel.setLabel(String.format(formatString, map.getFullStateName(state), total, totalPercent*100, diverted, cancelled));
       pieChart.data[0] = cancelledInt;
       pieChart.data[1] = totalInt - (divertedInt + cancelledInt);
       pieChart.data[2] = divertedInt;
