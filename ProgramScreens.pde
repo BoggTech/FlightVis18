@@ -11,6 +11,7 @@ class MenuScreen extends Screen {
   int totalFlights;
   MenuScreen() {
     super();
+
     String pcName = System.getProperty("user.name");
 
     totalFlights = dataFile.getTotal();
@@ -20,8 +21,8 @@ class MenuScreen extends Screen {
       + "\nPlease see available options below.", 32, 10, TEXT_START, SCREENX, 256);
     title.setAlign(CENTER);
 
-
-
+    
+    
     int buttonCount = 3;
     int freeSpace = SCREENX - (buttonCount+1)*buttonMargin;
     int buttonWidth = freeSpace/buttonCount;
@@ -41,7 +42,7 @@ class MenuScreen extends Screen {
     overviewButton.moveLabel(0, -10);
     overviewButton.setLabelColor(TEXT_COLOR);
     overviewButton.setEvent(GLOBAL_EVENT_OVERVIEW_SCREEN);
-
+    
     mapButton = new Button(buttonMargin*3+(freeSpace/buttonCount)*2, SCREENY-(buttonHeight+buttonMargin), buttonWidth, buttonHeight);
     mapButton.setLabel("Map");
     mapButton.setLabelSize(48);
@@ -57,7 +58,7 @@ class MenuScreen extends Screen {
     addWidget(mapButton);
     addWidget(overviewButton);
   }
-
+  
 
   void draw() {
     super.draw();
@@ -71,7 +72,16 @@ class MenuScreen extends Screen {
 
 // ---------------- SEARCH ----------------
 class SearchScreen extends Screen {
-
+  
+  Widget info;
+  Button result1 = new Button(201, 151, 700, 50);
+  Button result2 = new Button(201, 201, 700, 50);
+  Button result3 = new Button(201, 252, 700, 50);
+  Button result4 = new Button(201, 303, 700, 50);
+  Button result5 = new Button(201, 354, 700, 50);
+  Button result6 = new Button(201, 405, 700, 50);
+  Button result7 = new Button(201, 456, 700, 50);
+  
   Button date = new Button(0, 0, 200, 100);
   Button arrivalTime = new Button(0, 101, 200, 100);
   Button searchButton = new Button(800, 0, 100, 100);
@@ -80,8 +90,37 @@ class SearchScreen extends Screen {
   Button destination = new Button(0, 404, 200, 100);
   Button flightNumber = new Button(0, 505, 200, 100);
   SearchBar searchBar = new SearchBar(201, 0, SCREENX - 300, 100);
+  Button nextButton;
   Button backButton;
+  Button closeInfoButton;
+  TextWidget infoLabel;
+  int rowNumber;
+  String formatString = "%s\n %s\n %s\n %s\n %s\n %s\n";
   SearchScreen() {
+    
+    super();
+    
+    info = new Widget(SCREENX/2-250, SCREENY/2-250, 500, 500);
+    info.setSelectedBorderColor(info.getDefaultBorderColor());
+    infoLabel = new TextWidget(10, 10, int(info.getWidth()-10), int(info.getHeight()-40));
+    infoLabel.setLabel(formatString);
+    info.addChild(infoLabel);
+    info.hide();
+    closeInfoButton = new Button(info.getWidth()-100, info.getHeight()-50, 90, 40);
+    closeInfoButton.setLabel("BACK");
+    closeInfoButton.setAlign(CENTER);
+    closeInfoButton.setLabelSize(24);
+    closeInfoButton.moveLabel(0, -3);
+    info.addChild(closeInfoButton);
+    
+    nextButton = new Button(250, SCREENY -65, 80, 55);
+    nextButton.setLabel("NEXT");
+    nextButton.setAlign(CENTER);
+    nextButton.setLabelSize(24);
+    nextButton.moveLabel(0, -3);
+    nextButton.setEvent(SEARCH_NEXT);
+    addWidget(nextButton);
+    
     backButton = new Button(SCREENX-80-25, SCREENY-65, 80, 55);
     backButton.setLabel("BACK");
     backButton.setAlign(CENTER);
@@ -89,12 +128,12 @@ class SearchScreen extends Screen {
     backButton.moveLabel(0, -3);
     backButton.setEvent(GLOBAL_EVENT_MENU_SCREEN);
     addWidget(backButton);
-
-
+    
+    
     addWidget(searchBar);
     addWidget(searchButton);
     searchButton.setEvent(SEARCH_EVENT_7);
-
+    
     //date Button
     addWidget(date);
     date.setLabel("Date");
@@ -104,7 +143,7 @@ class SearchScreen extends Screen {
     date.moveLabel(0, 0);
     date.setLabelColor(TEXT_COLOR);
     date.setEvent(SEARCH_EVENT_1);
-
+    
     // arrival time filter
     addWidget(arrivalTime);
     arrivalTime.setLabel("Arrival");
@@ -114,7 +153,7 @@ class SearchScreen extends Screen {
     arrivalTime.moveLabel(0, 0);
     arrivalTime.setLabelColor(TEXT_COLOR);
     arrivalTime.setEvent(SEARCH_EVENT_2);
-
+    
     addWidget(depTime);
     depTime.setLabel("Departure");
     depTime.setLabelSize(35);
@@ -123,7 +162,7 @@ class SearchScreen extends Screen {
     depTime.moveLabel(0, 0);
     depTime.setLabelColor(TEXT_COLOR);
     depTime.setEvent(SEARCH_EVENT_3);
-
+    
     addWidget(origin);
     origin.setLabel("Origin");
     origin.setLabelSize(35);
@@ -132,7 +171,7 @@ class SearchScreen extends Screen {
     origin.moveLabel(0, 0);
     origin.setLabelColor(TEXT_COLOR);
     origin.setEvent(SEARCH_EVENT_4);
-
+    
     addWidget(destination);
     destination.setLabel("Destination");
     destination.setLabelSize(35);
@@ -141,7 +180,7 @@ class SearchScreen extends Screen {
     destination.moveLabel(0, 0);
     destination.setLabelColor(TEXT_COLOR);
     destination.setEvent(SEARCH_EVENT_5);
-
+    
     addWidget(flightNumber);
     flightNumber.setLabel("Flight No.");
     flightNumber.setLabelSize(35);
@@ -150,23 +189,82 @@ class SearchScreen extends Screen {
     flightNumber.moveLabel(0, 0);
     flightNumber.setLabelColor(TEXT_COLOR);
     flightNumber.setEvent(SEARCH_EVENT_6);
+    
   }
   
-  void onKeyPressed(char keyValue) {
-    if ( keyValue == ENTER && searchBar.selected ) {
-      handleEvent(SEARCH_EVENT_7);
+  void draw(){
+    
+    if(printData == true){
+      
+      text("Results " + resultCount + " - " + (resultCount + 7) + " out of " + totalResults, 250, 130);
+      addWidget(result1);
+      result1.setLabel(results[resultCount -1][3] + " " + results[resultCount -1][5] + " - " + results[resultCount -1][9]);
+      result1.setLabelSize(35);
+      result1.setEvent(SEARCH_RESULT1);
+      
+      addWidget(result2);
+      result2.setLabel(results[resultCount][3] + " " + results[resultCount][5] + " - " + results[resultCount][9]);
+      result2.setLabelSize(35);
+      result2.setEvent(SEARCH_RESULT2);
+      
+      addWidget(result3);
+      result3.setLabel(results[resultCount +1][3] + " " + results[resultCount +1][5] + " - " + results[resultCount +1][9]);
+      result3.setLabelSize(35);
+      result3.setEvent(SEARCH_RESULT3);
+      
+      addWidget(result4);
+      result4.setLabel(results[resultCount +2][3] + " " + results[resultCount +2][5] + " - " + results[resultCount +2][9]);
+      result4.setLabelSize(35);
+      result4.setEvent(SEARCH_RESULT4);
+      
+      addWidget(result5);
+      result5.setLabel(results[resultCount +3][3] + " " + results[resultCount +3][5] + " - " + results[resultCount +3][9]);
+      result5.setLabelSize(35);
+      result5.setEvent(SEARCH_RESULT5);
+      
+      addWidget(result6);
+      result6.setLabel(results[resultCount +4][3] + " " + results[resultCount +4][5] + " - " + results[resultCount +4][9]);
+      result6.setLabelSize(35);
+      result6.setEvent(SEARCH_RESULT6);
+      
+      addWidget(result7);
+      result7.setLabel(results[resultCount +5][3] + " " + results[resultCount +5][5] + " - " + results[resultCount +5][9]);
+      result7.setLabelSize(35);
+      result7.setEvent(SEARCH_RESULT7);
+      addWidget(info);
     }
+    super.draw();
   }
   
-  boolean handleEvent(int event) {
-    switch ( event ) {
-    case SEARCH_EVENT_7:
-      println(searchBar.getResult());
-      return false;
-    default:
-      return true;
-    }
-  }
+   void onMouseReleased(int mouseX, int mouseY) {
+    
+     int event = activeScreen.getEvent(mouseX, mouseY);
+     
+     if(event >= 10){
+       getResultInfo(mouseX, mouseY);
+       info.show();
+     }
+     else {
+      Button button = (Button) info.getChild(1);
+      if ( button.isTouching(mouseX, mouseY) ) {
+        info.hide();
+       }
+      }
+   }
+   
+   void getResultInfo(int mouseX, int mouseY){
+     
+      int event = activeScreen.getEvent(mouseX, mouseY);
+      rowNumber = event - 11 + resultCount;
+      
+      String flightTrip = results[rowNumber][5] + " - " + results[rowNumber][9];
+      String flightDate = "Date : " + results[rowNumber][1];
+      String flightDistance = "Distance : " + results[rowNumber][17];
+      String arrivalTime = "Scheduled Arrival : " + results[rowNumber][14];
+      String departureTime = "Scheduled Depature : " + results[rowNumber][12];
+      String flightNumber = "Flight Number : " + results[rowNumber][3];
+      infoLabel.setLabel(String.format(formatString, flightTrip, flightDate, flightDistance, arrivalTime, departureTime, flightNumber));
+   }
 }
 
 // ---------------- MAP ----------------
@@ -176,7 +274,6 @@ class MapScreen extends Screen {
   Button backButton, closeInfoButton;
   TextWidget stateLabel, infoLabel;
   Widget info;
-  PieChart pieChart;
   String currentState;
   Boolean drag;
   String total, diverted, cancelled;
@@ -211,17 +308,7 @@ class MapScreen extends Screen {
     closeInfoButton.setLabelSize(24);
     closeInfoButton.moveLabel(0, -3);
     info.addChild(closeInfoButton);
-
-    // pie chart on infobox
-    float[] data = {1, 1, 1};
-    color[] colors = {color(255, 0, 0), color(0, 255, 0), color(255, 255, 0)};
-    pieChart = new PieChart(data, colors, 250, 350, 250);
-    info.addChild(pieChart);
-
-
-
-
-
+    
     addWidget(map);
     addWidget(backButton);
     addWidget(stateLabel);
@@ -248,17 +335,10 @@ class MapScreen extends Screen {
     }
     if ( state != null && !info.shown && map.isTouching(mouseX, mouseY)) {
       map.setActive(false);
-      int totalInt = dataFile.countTotalState(state);
-      int divertedInt = dataFile.countDivertedState(state);
-      int cancelledInt = dataFile.countCancelledState(state);
-      total = fancyNumber(totalInt);
-      diverted = fancyNumber(divertedInt);
-      cancelled = fancyNumber(cancelledInt);
+      total = fancyNumber(dataFile.countTotalState(state));
+      diverted = fancyNumber(dataFile.countDivertedState(state));
+      cancelled = fancyNumber(dataFile.countCancelledState(state));
       infoLabel.setLabel(String.format(formatString, map.getFullStateName(state), total, diverted, cancelled));
-      pieChart.data[0] = cancelledInt;
-      pieChart.data[1] = totalInt - (divertedInt + cancelledInt);
-      pieChart.data[2] = divertedInt;
-      pieChart.setup();
       info.show();
     } else {
       Button button = (Button) info.getChild(1);
@@ -323,7 +403,7 @@ class OverviewScreen extends Screen {
     reset.moveLabel(0, -3);
     reset.setEvent(4);
     addWidget(thePieChart);
-
+    
     backButton = new Button(25, SCREENY-65, 80, 55);
     backButton.setLabel("BACK");
     backButton.setAlign(CENTER);
