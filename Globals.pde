@@ -1,13 +1,6 @@
 final int GLOBAL_EVENT_NULL = 0;
 final int GLOBAL_EVENT_RIGHT = -1;
-final int GLOBAL_EVENT_LEFT = -2;
-final int SEARCH_EVENT_1 = 1;
-final int SEARCH_EVENT_2 = 2;
-final int SEARCH_EVENT_3 = 3;
-final int SEARCH_EVENT_4 = 4;
-final int SEARCH_EVENT_5 = 5;
-final int SEARCH_EVENT_6 = 6;
-final int SEARCH_EVENT_7 = 7;
+final int GLOBAL_EVENT_LEFT = -2;  
 final int GLOBAL_EVENT_DEBUG_1 = -3;
 final int GLOBAL_EVENT_DEBUG_2 = -4;
 final int GLOBAL_EVENT_DEBUG_3 = -5;
@@ -15,6 +8,21 @@ final int GLOBAL_EVENT_MAP_SCREEN = -6;
 final int GLOBAL_EVENT_SEARCH_SCREEN = -7;
 final int GLOBAL_EVENT_MENU_SCREEN = -8;
 final int GLOBAL_EVENT_OVERVIEW_SCREEN = -9;
+final int SEARCH_EVENT_1 = 1;
+final int SEARCH_EVENT_2 = 2;
+final int SEARCH_EVENT_3 = 3;
+final int SEARCH_EVENT_4 = 4;
+final int SEARCH_EVENT_5 = 5;
+final int SEARCH_EVENT_6 = 6;
+final int SEARCH_EVENT_7 = 7;
+final int SEARCH_RESULT1 = 10;
+final int SEARCH_RESULT2 = 11;
+final int SEARCH_RESULT3 = 12;
+final int SEARCH_RESULT4 = 13;
+final int SEARCH_RESULT5 = 14;
+final int SEARCH_RESULT6 = 15;
+final int SEARCH_RESULT7 = 16;
+final int SEARCH_NEXT = 9;
 
 
 final int SCREENX = 900;
