@@ -129,12 +129,17 @@ class DataFile {
     }
   }
 
-  String[][] getResults(int interval, int offset, String field, String query) {
+  String[][] getResults(int interval, int offset, String field, String query, boolean strict) {
     try {
       // SQL INJECTION BABEYYYYYYY WOOOOOOOOOOOOOO
-      String sql = String.format("SELECT ROWID, * FROM flights WHERE %s LIKE \"%%%s%%\" LIMIT %s OFFSET %s", field, query, interval, offset);
+      String condition;
+      if ( !strict ) {
+        condition = "%%%s%%";
+      } else {
+        condition = "%s";
+      }
+      String sql = String.format("SELECT ROWID, * FROM flights WHERE %s LIKE \"" + condition + "\" LIMIT %s OFFSET %s", field, query, interval, offset);
       ResultSet rs = s.executeQuery(sql);
-      int i = 0;
       ArrayList<String[]> returnValue = new ArrayList<String[]>();
       while ( rs.next() ) {
         String[] strings = {
@@ -170,9 +175,15 @@ class DataFile {
     }
   }
 
-  int getResultsCount(String field, String query) {
+  int getResultsCount(String field, String query, boolean strict) {
+    String condition;
+      if ( !strict ) {
+        condition = "%%%s%%";
+      } else {
+        condition = "%s";
+      }
     try {
-      String sql = String.format("SELECT COUNT(*) AS total FROM flights WHERE %s LIKE \"%%%s%%\"", field, query);
+      String sql = String.format("SELECT COUNT(*) AS total FROM flights WHERE %s LIKE \"" + condition + "\"", field, query);
       ResultSet rs = s.executeQuery(sql);
       return rs.getInt("total");
     }

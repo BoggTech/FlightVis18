@@ -225,17 +225,18 @@ class Widget {
   }
 
   boolean removeChild(Widget child) {
-    if ( children.get(child.getId()) != child ) {
+    if ( child.getId() >= children.size() || children.get(child.getId()) != child ) {
       // i don't own you
       return false;
     } else {
       int removeId = child.getId();
       children.remove(removeId);
-      for ( int i = removeId; i < children.size(); i++ ) {
+      for ( int i = removeId-1; i < children.size(); i++ ) {
         Widget widget = (Widget) children.get(i);
         widget.setId(i);
       }
       child.removeParent();
+      child.setId(0);
       return true;
     }
   }

@@ -67,7 +67,7 @@ class SearchBar extends Widget {
           && (keyValue <= 'Z' && keyValue >= 'A'
           || keyValue <= 'z' && keyValue >= 'a') 
           || keyValue <= '9' && keyValue >= '0'
-          || keyValue == ' ' ) {
+          || keyValue == ' ' || keyValue == '/') {
           insideSearchBar.add(String.valueOf(keyValue));
       }
       String label = "";

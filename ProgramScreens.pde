@@ -82,16 +82,17 @@ class SearchScreen extends Screen {
   Button result7 = new Button(201, 456, 700, 50);
   Button date = new Button(0, 0, 200, 100);
   Button arrivalTime = new Button(0, 101, 200, 100);
-  Button searchButton = new Button(800, 0, 100, 100);
   Button depTime = new Button(0, 202, 200, 100);
   Button origin = new Button(0, 303, 200, 100);
   Button destination = new Button(0, 404, 200, 100);
   Button flightNumber = new Button(0, 505, 200, 100);
-  SearchBar searchBar = new SearchBar(201, 0, SCREENX - 300, 100);
+  SearchBar searchBar = new SearchBar(201, 0, SCREENX - 202, 100);
   Button nextButton;
+  Button prevButton;
   Button backButton;
   Button closeInfoButton;
   TextWidget infoLabel;
+  boolean strict;
   int rowNumber;
   String formatString = "%s\n %s\n %s\n %s\n %s\n %s\n";
   String word = "";
@@ -110,6 +111,8 @@ class SearchScreen extends Screen {
 
   SearchScreen() {
     super();
+    strict = false;
+    results = new String[0][0];
 
     info = new Widget(SCREENX/2-250, SCREENY/2-250, 500, 500);
     info.setSelectedBorderColor(info.getDefaultBorderColor());
@@ -124,13 +127,21 @@ class SearchScreen extends Screen {
     closeInfoButton.moveLabel(0, -3);
     info.addChild(closeInfoButton);
 
-    nextButton = new Button(250, SCREENY -65, 80, 55);
-    nextButton.setLabel("NEXT");
+    nextButton = new Button(250+90, SCREENY-65, 80, 55); 
+    nextButton.setLabel("--->");
     nextButton.setAlign(CENTER);
     nextButton.setLabelSize(24);
     nextButton.moveLabel(0, -3);
     nextButton.setEvent(SEARCH_NEXT);
     addWidget(nextButton);
+
+    prevButton = new Button(250, SCREENY -65, 80, 55);
+    prevButton.setLabel("<---");
+    prevButton.setAlign(CENTER);
+    prevButton.setLabelSize(24);
+    prevButton.moveLabel(0, -3);
+    prevButton.setEvent(SEARCH_BACK);
+    addWidget(prevButton);
 
     backButton = new Button(SCREENX-80-25, SCREENY-65, 80, 55);
     backButton.setLabel("BACK");
@@ -142,8 +153,6 @@ class SearchScreen extends Screen {
 
 
     addWidget(searchBar);
-    addWidget(searchButton);
-    searchButton.setEvent(SEARCH_EVENT_7);
 
     //date Button
     addWidget(date);
@@ -200,149 +209,227 @@ class SearchScreen extends Screen {
     flightNumber.moveLabel(0, 0);
     flightNumber.setLabelColor(TEXT_COLOR);
     flightNumber.setEvent(SEARCH_EVENT_6);
+
+    result1.setEvent(SEARCH_RESULT1);
+    result2.setEvent(SEARCH_RESULT2);
+    result3.setEvent(SEARCH_RESULT3);
+    result4.setEvent(SEARCH_RESULT4);
+    result5.setEvent(SEARCH_RESULT5);
+    result6.setEvent(SEARCH_RESULT6);
+    result7.setEvent(SEARCH_RESULT7);
   }
 
   void draw() {
-
+    textSize(35);
+    textAlign(LEFT, LEFT);
+    // get what range of results we're showing
+    int upperBound;
+    int lowerBound;
+    if ( resultCount+6 > totalResults ) {
+      upperBound = totalResults;
+    } else {
+      upperBound = resultCount+6;
+    }
+    // edge case
+    if ( totalResults == 0 ) {
+      lowerBound = 0;
+    } else {
+      lowerBound = resultCount;
+    }
+    text("Results " + lowerBound + " - " + upperBound + " out of " + fancyNumber(totalResults), getEffectiveX()+215, getEffectiveY()+135);
     if (printData == true) {
+      // this is ugly, and hacky, but i don't have time to
+      // rewrite someone's code at 1am
+      // this shouldn't run every frame
 
-      text("Results " + resultCount + " - " + (resultCount + 7) + " out of " + totalResults, 250, 130);
-      addWidget(result1);
-      result1.setLabel(results[resultCount -1][3] + " " + results[resultCount -1][5] + " - " + results[resultCount -1][9]);
-      result1.setLabelSize(35);
-      result1.setEvent(SEARCH_RESULT1);
+      // printdata is true if we should print new data, so
+      // remove previous results
+      removeChild(result1);
+      removeChild(result2);
+      removeChild(result3);
+      removeChild(result4);
+      removeChild(result5);
+      removeChild(result6);
+      removeChild(result7);
 
-      addWidget(result2);
-      result2.setLabel(results[resultCount][3] + " " + results[resultCount][5] + " - " + results[resultCount][9]);
-      result2.setLabelSize(35);
-      result2.setEvent(SEARCH_RESULT2);
+      // now show available results
+      if ( results.length-resultCount >= 0 ) {
+        addWidget(result1);
+        result1.setLabel(results[resultCount -1][0] + " | " + results[resultCount -1][5] + " - " + results[resultCount -1][9]);
+        result1.setLabelSize(35);
+      }
 
-      addWidget(result3);
-      result3.setLabel(results[resultCount +1][3] + " " + results[resultCount +1][5] + " - " + results[resultCount +1][9]);
-      result3.setLabelSize(35);
-      result3.setEvent(SEARCH_RESULT3);
+      if ( results.length-resultCount >= 1 ) {
+        addWidget(result2);
+        result2.setLabel(results[resultCount][0] + " | " + results[resultCount][5] + " - " + results[resultCount][9]);
+        result2.setLabelSize(35);
+      }
 
-      addWidget(result4);
-      result4.setLabel(results[resultCount +2][3] + " " + results[resultCount +2][5] + " - " + results[resultCount +2][9]);
-      result4.setLabelSize(35);
-      result4.setEvent(SEARCH_RESULT4);
+      if ( results.length-resultCount >= 2 ) {
+        addWidget(result3);
+        result3.setLabel(results[resultCount +1][0] + " | " + results[resultCount +1][5] + " - " + results[resultCount +1][9]);
+        result3.setLabelSize(35);
+      }
 
-      addWidget(result5);
-      result5.setLabel(results[resultCount +3][3] + " " + results[resultCount +3][5] + " - " + results[resultCount +3][9]);
-      result5.setLabelSize(35);
-      result5.setEvent(SEARCH_RESULT5);
 
-      addWidget(result6);
-      result6.setLabel(results[resultCount +4][3] + " " + results[resultCount +4][5] + " - " + results[resultCount +4][9]);
-      result6.setLabelSize(35);
-      result6.setEvent(SEARCH_RESULT6);
+      if ( results.length-resultCount >= 3 ) {
+        addWidget(result4);
+        result4.setLabel(results[resultCount +2][0] + " | " + results[resultCount +2][5] + " - " + results[resultCount +2][9]);
+        result4.setLabelSize(35);
+      }
 
-      addWidget(result7);
-      result7.setLabel(results[resultCount +5][3] + " " + results[resultCount +5][5] + " - " + results[resultCount +5][9]);
-      result7.setLabelSize(35);
-      result7.setEvent(SEARCH_RESULT7);
-      addWidget(info);
+      if ( results.length-resultCount >= 4 ) {
+        addWidget(result5);
+        result5.setLabel(results[resultCount +3][0] + " | " + results[resultCount +3][5] + " - " + results[resultCount +3][9]);
+        result5.setLabelSize(35);
+      }
+
+      if ( results.length-resultCount >= 5 ) {
+        addWidget(result6);
+        result6.setLabel(results[resultCount +4][0] + " | " + results[resultCount +4][5] + " - " + results[resultCount +4][9]);
+        result6.setLabelSize(35);
+      }
+
+      if ( results.length-resultCount >= 6 ) {
+        addWidget(result7);
+        result7.setLabel(results[resultCount +5][0] + " | " + results[resultCount +5][5] + " - " + results[resultCount +5][9]);
+        result7.setLabelSize(35);
+        addWidget(info);
+      }
+
+      // render order has changed; put the infobox back on top
+      removeChild(info);
+      addChild(info);
+
+      // everything is in order
+      printData = false;
     }
     super.draw();
   }
 
-  void onMouseReleased(int mouseX, int mouseY) {
-
-    int event = activeScreen.getEvent(mouseX, mouseY);
-
-    if (event >= 10) {
-      getResultInfo(mouseX, mouseY);
-      info.show();
-    } else {
-      Button button = (Button) info.getChild(1);
-      if ( button.isTouching(mouseX, mouseY) ) {
-        info.hide();
-      }
-    }
-  }
-
-  void getResultInfo(int mouseX, int mouseY) {
-
-    int event = activeScreen.getEvent(mouseX, mouseY);
+  void getResultInfo(int event) {
+    // format our info string
     rowNumber = event - 11 + resultCount;
-
     String flightTrip = results[rowNumber][5] + " - " + results[rowNumber][9];
     String flightDate = "Date : " + results[rowNumber][1];
     String flightDistance = "Distance : " + results[rowNumber][17];
-    String arrivalTime = "Scheduled Arrival : " + results[rowNumber][14];
-    String departureTime = "Scheduled Depature : " + results[rowNumber][12];
-    String flightNumber = "Flight Number : " + results[rowNumber][3];
+    
+    String scheduled = results[rowNumber][14];
+    String departure = results[rowNumber][12];
+    String arrivalTime = "Scheduled Arrival : " + scheduled.substring(0,2) + ":" + scheduled.substring(2,4);
+    String departureTime = "Scheduled Departure : " + departure.substring(0,2) + ":" + departure.substring(2,4);
+    String flightNumber = "Flight Number : " + fancyNumber(parseInt(results[rowNumber][0]));
     infoLabel.setLabel(String.format(formatString, flightTrip, flightDate, flightDistance, arrivalTime, departureTime, flightNumber));
   }
 
   boolean handleEvent(int event) {
+    // we'll set this to false if nothing happens
+    printData = true;
+    if (event >= 10 && event < SEARCH_BACK) {
+      getResultInfo(event);
+      info.show();
+      printData = false;
+      return false;
+    } else {
+      Button button = (Button) info.getChild(1);
+      if ( button.isTouching(mouseX, mouseY) ) {
+        info.hide();
+        printData = false;
+        return false;
+      }
+    }
+
     switch ( event ) {
     case SEARCH_EVENT_1:
+      resetSearch();
+      strict = false;
       printData = true;
       results = null;
       resultCount = 1;
       currentId = FLIGHT_DATE;
-      totalResults = dataFile.getResultsCount(currentId, searchBar.getResult());
-      results = dataFile.getResults(searchCount, 5, currentId, searchBar.getResult());
+      totalResults = dataFile.getResultsCount(currentId, searchBar.getResult(), strict);
+      results = dataFile.getResults(searchCount, 0, currentId, searchBar.getResult(), strict);
       return false;
     case SEARCH_EVENT_2:
+      resetSearch();
+      strict = false;
       printData = true;
       results = null;
       resultCount = 1;
       currentId = SCHEDULED_ARRIVAL;
-      totalResults = dataFile.getResultsCount(currentId, searchBar.getResult());
-      results = dataFile.getResults(searchCount, 5, currentId, searchBar.getResult());
+      totalResults = dataFile.getResultsCount(currentId, searchBar.getResult(), strict);
+      results = dataFile.getResults(searchCount, 0, currentId, searchBar.getResult(), strict);
       return false;
     case SEARCH_EVENT_3:
+      resetSearch();
+      strict = false;
       printData = true;
       results = null;
       resultCount = 1;
       currentId = SCHEDULED_DEPARTURE;
-      totalResults = dataFile.getResultsCount(currentId, searchBar.getResult());
-      results = dataFile.getResults(searchCount, 5, currentId, searchBar.getResult());
+      totalResults = dataFile.getResultsCount(currentId, searchBar.getResult(), strict);
+      results = dataFile.getResults(searchCount, 0, currentId, searchBar.getResult(), strict);
       return false;
     case SEARCH_EVENT_4:
+      resetSearch();
+      strict = true;
       printData = true;
       results = null;
       resultCount = 1;
       currentId = ORIGIN_STATE_ABBREVIATION;
-      totalResults = dataFile.getResultsCount(currentId, searchBar.getResult());
-      results = dataFile.getResults(searchCount, 5, currentId, searchBar.getResult());
+      totalResults = dataFile.getResultsCount(currentId, searchBar.getResult(), strict);
+      results = dataFile.getResults(searchCount, 0, currentId, searchBar.getResult(), strict);
       return false;
     case SEARCH_EVENT_5:
+      resetSearch();
+      strict = true;
       printData = true;
       results = null;
       resultCount = 1;
       currentId = DESTINATION_STATE_ABBREVIATION;
-      totalResults = dataFile.getResultsCount(currentId, searchBar.getResult());
-      results = dataFile.getResults(searchCount, 5, currentId, searchBar.getResult());
+      totalResults = dataFile.getResultsCount(currentId, searchBar.getResult(), strict);
+      results = dataFile.getResults(searchCount, 0, currentId, searchBar.getResult(), strict);
       return false;
     case SEARCH_EVENT_6:
+      resetSearch();
+      strict = true;
       printData = true;
       results = null;
       resultCount = 1;
-      currentId = CARRIER_ID;
-      totalResults = dataFile.getResultsCount(currentId, searchBar.getResult());
-      results = dataFile.getResults(searchCount, 5, currentId, searchBar.getResult());
+      currentId = "rowid";
+      totalResults = dataFile.getResultsCount(currentId, searchBar.getResult(), strict);
+      results = dataFile.getResults(searchCount, 0, currentId, searchBar.getResult(), strict);
       return false;
     case SEARCH_EVENT_7:
+      resetSearch();
       printData = false;
       searchCount = 30;
       return false;
     case SEARCH_NEXT:
-      resultCount = resultCount +8;
+      if ( resultCount+7 < totalResults )
+        resultCount = resultCount +7;
 
       if (nextCount  == 3) {
-        searchCount = searchCount + searchCount;
-
-        results = dataFile.getResults(searchCount, 5, currentId, searchBar.getResult());
+        searchCount += 30;
+        if ( !currentId.equals("") )
+          results = dataFile.getResults(searchCount, 0, currentId, searchBar.getResult(), strict);
         nextCount = 1;
       }
       nextCount++;
       return false;
+    case SEARCH_BACK:
+      if ( resultCount-7 > 0 )
+        resultCount = resultCount -7;
+      return false;
     default:
+      printData = false;
       return true;
     }
+  }
+
+  void resetSearch() {
+    nextCount = 1;
+    searchCount = 30;
   }
 }
 
