@@ -23,6 +23,7 @@ final int SEARCH_RESULT5 = 14;
 final int SEARCH_RESULT6 = 15;
 final int SEARCH_RESULT7 = 16;
 final int SEARCH_NEXT = 9;
+final int SEARCH_BACK = 17;
 
 
 final int SCREENX = 900;
