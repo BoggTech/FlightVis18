@@ -107,7 +107,6 @@ class SearchScreen extends Screen {
   int nextCount = 1;
   boolean printData = false;
   String dataAsString = "";
-  ArrayList<FlightObject> modifiedObjects = new ArrayList<>();
 
   SearchScreen() {
     super();
