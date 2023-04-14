@@ -3,9 +3,9 @@ Program designed for visualizing flight data in Processing 4.
 
 **Prerequisites**
 
-Geomerative: http://www.ricardmarxer.com/geomerative/
+Geomerative: http://www.ricardmarxer.com/geomerative/ (Extract folder contents into your Libraries folder.)
 
-SQLite jdbc: https://github.com/xerial/sqlite-jdbc (drag into processing)
+SQLite jdbc: https://github.com/xerial/sqlite-jdbc (Download appropriate .jar, drag into the processing project window to automatically install, then restart processing)
 
 ---------------
 
