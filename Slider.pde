@@ -1,3 +1,5 @@
+// Slider // Unused currently. // Author: Darryl
+
 class Slider extends Widget {
   private float progress;
   private final float margin = 5;

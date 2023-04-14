@@ -1,7 +1,9 @@
+// Widget // Author: Darryl
+
 class Widget {
   // class for a basic widget square
   // will move with its parent
-  // TODO: may rename effectiveX to be the x position, and turn how X is currently into relative x?
+  // TODO: may rename effectiveX to be the x position, and turn how X is currently into relative x? confusing naming convention
   private float x;
   private float y;
   private float originX;
@@ -53,7 +55,9 @@ class Widget {
     selectedBorderColor = color(255);
     defaultBorderColor = color(0);
   }
-
+  
+  // when setting X/Y, we want to make sure the widget is using its parent's X/Y position as its
+  // origin, rather than 0,0. we do that here.
   private void updatePosition() {
     if ( parent != null ) {
       originX = parent.getEffectiveX();
@@ -70,6 +74,7 @@ class Widget {
     }
   }
   
+  // methods for showing/hiding the widget. will not render if set to false.
   void show() {
     shown = true;
   }
@@ -78,6 +83,7 @@ class Widget {
     shown = false;
   }
 
+  // getters
   float getX() {
     return x;
   }
@@ -105,19 +111,7 @@ class Widget {
   color getColor() {
     return widgetColor;
   }
-
-  void setDefaultBorderColor(color borderColor) {
-    defaultBorderColor = borderColor;
-  }
-
-  void setSelectedBorderColor(color borderColor) {
-    selectedBorderColor = borderColor;
-  }
-
-  void setBorderColor(color borderColor) {
-    this.borderColor = borderColor;
-  }
-
+  
   color getDefaultBorderColor() {
     return defaultBorderColor;
   }
@@ -129,18 +123,14 @@ class Widget {
   color getBorderColor() {
     return borderColor;
   }
-
-  Widget getParent() {
-    return parent;
-  }
-
+  
   ArrayList<Widget> getChildren() {
     ArrayList<Widget> copy = (ArrayList) children.clone();
     return copy;
   }
-
-  int getChildrenLength() {
-    return children.size();
+  
+  Widget getParent() {
+    return parent;
   }
 
   Object getChild(int id) {
@@ -151,8 +141,35 @@ class Widget {
     }
   }
 
+  int getChildrenLength() {
+    return children.size();
+  }
+  
+  // id is used by the parenting system; basically the widget's index in the list of children
   int getId() {
     return id;
+  }
+  
+  // rotation is currently not implemented very well
+  float getRotation() {
+    return rotation;
+  }
+  
+  int getEvent() {
+    return event;
+  }
+  
+  // setters
+  void setDefaultBorderColor(color borderColor) {
+    defaultBorderColor = borderColor;
+  }
+
+  void setSelectedBorderColor(color borderColor) {
+    selectedBorderColor = borderColor;
+  }
+
+  void setBorderColor(color borderColor) {
+    this.borderColor = borderColor;
   }
 
   void setX(float x) {
@@ -173,16 +190,16 @@ class Widget {
     this.height = height;
   }
 
-  float getRotation() {
-    return rotation;
-  }
-
   void setRotation(float rotation) {
     this.rotation = rotation;
   }
 
   void setColor(color widgetColor) {
     this.widgetColor = widgetColor;
+  }
+  
+  void setEvent(int event) {
+    this.event = event;
   }
 
   // sets the parent of this widget to another; handles cleaning up
@@ -219,7 +236,8 @@ class Widget {
       child.setParent(this);
     }
   }
-
+  
+  // removing parent/children
   void removeParent() {
     setParent(null);
   }
@@ -240,19 +258,22 @@ class Widget {
       return true;
     }
   }
-
+  
+  // collisions
   boolean isTouching(int mouseX, int mouseY) {
     if ( mouseX>effectiveX && mouseX < effectiveX+width
       && mouseY >effectiveY && mouseY <effectiveY+height )
       return true;
     return false;
   }
-
+  
+  // called by checkCollisions to a child when mouse is touching it, which will then call it again to check its own children.
   void mouseTouching() {
     borderColor = selectedBorderColor;
     checkCollisions(mouseX, mouseY);
   }
-
+  
+  // communicates that the mouse has been pressed to all children
   void mousePressed(int mouseX, int mouseY) {
     onClick(mouseX, mouseY);
     for ( int i = 0; i < getChildrenLength(); i++ ) {
@@ -262,9 +283,10 @@ class Widget {
   }
 
   void onClick(int mouseX, int mouseY) {
-    // boring
+    // called by mousePressed
   }
-
+  
+  // communicates that the mouse has been dragged to all children
   void mouseDragged(int mouseX, int mouseY, int pmouseX, int pmouseY) {
     onMouseDragged(mouseX, mouseY, pmouseX, pmouseY);
     for ( int i = 0; i < getChildrenLength(); i++ ) {
@@ -274,9 +296,10 @@ class Widget {
   }
 
   void onMouseDragged(int mouseX, int mouseY, int pmouseX, int pmouseY) {
-    // i just shouldve named it this
+    // called by mouseDragged
   }
 
+  // communicates that the mouse has been released to all children
   void mouseReleased(int mouseX, int mouseY) {
     onMouseReleased(mouseX, mouseY);
     for ( int i = 0; i < getChildrenLength(); i++ ) {
@@ -286,8 +309,10 @@ class Widget {
   }
 
   void onMouseReleased(int mouseX, int mouseY) {
+    // called by mouseReleased
   }
 
+  // communicates that the mousewheel has been moved to all children
   void mouseWheel(int wheel) {
     onMouseWheel(wheel);
     for ( int i = 0; i < getChildrenLength(); i++ ) {
@@ -297,8 +322,10 @@ class Widget {
   }
 
   void onMouseWheel(int wheel) {
+    // called by mouseWheel
   }
-
+  
+  // communicates that the keyboard has been pressed to all children
   void keyPressed(char keyValue) {
     onKeyPressed(keyValue);
     for ( int i = 0; i < getChildrenLength(); i++ ) {
@@ -308,9 +335,10 @@ class Widget {
   }
 
   void onKeyPressed(char keyValue) {
+    // called by keyPressed
   }
 
-  // draw w/o children
+  // draw me w/o children
   void drawThis() {
     if ( !shown ) {
       return;
@@ -324,11 +352,15 @@ class Widget {
     popMatrix();
     borderColor = defaultBorderColor;
   }
+  
+  // draw me + children
   void draw() {
     drawThis();
     drawChildren();
   }
-
+  
+  // draw only children
+  // orphans......
   void drawChildren() {
     if ( !shown ) {
       return;
@@ -338,7 +370,9 @@ class Widget {
       widget.draw();
     }
   }
-
+  
+  // check collisions will check a child's collisions and then communicate to it that it is touching the mouse
+  // this will then get called by the child through mouseTouching
   void checkCollisions(int mouseX, int mouseY) {
     for ( int i = 0; i < getChildrenLength(); i++ ) {
       Widget widget = (Widget) getChild(i);
@@ -346,13 +380,5 @@ class Widget {
         widget.mouseTouching();
       }
     }
-  }
-
-  void setEvent(int event) {
-    this.event = event;
-  }
-
-  int getEvent() {
-    return event;
   }
 }

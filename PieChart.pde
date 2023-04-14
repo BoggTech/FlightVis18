@@ -1,3 +1,6 @@
+// PieChart // Author: Tiernan // Contributors: Darryl
+// Class to make Pie Charts
+
 public class PieChart extends Widget {
   //variables used for chart, each index of the int array will be something such as
   //airport or state and are to be put into the labels array, the numbers at each
@@ -15,7 +18,8 @@ public class PieChart extends Widget {
     sum=0;
     setup();
   }
-
+  
+  // make sure the piechart is ready to draw
   void setup() {
     sum = 0;
     for (int i=0; i<data.length; i++) {

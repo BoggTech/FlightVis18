@@ -1,6 +1,8 @@
+// MapWidget // Author: Darryl //
+// Widget that acts as an interactive widget.
+// Will keep track of what the mouse is hovering over, and store the states abbreviation in "selectedState"
+
 class MapWidget extends Widget {
-  // time for hell
-  // TODO: preload data??
 
   final float MIN_SCALE = 1;
   final float MAX_SCALE = 2;
@@ -43,38 +45,37 @@ class MapWidget extends Widget {
     scale = 1;
     float xDifference = width-originalMap.width;
     float yDifference = height-originalMap.height;
-
     float differencePercent;
-
     differencePercent = getHeight()/originalMap.height;
     originalMap.translate(getEffectiveX()+xDifference/2, getEffectiveY()+yDifference/2);
     originalMap.scale(differencePercent, getEffectiveX()+getWidth()/2, getEffectiveY()+getHeight()/2);
-
-
+    
     originalMap.setFill(color(0));
-
+    
+    // map
     map = new RShape(originalMap);
-    calculateCenterPoint();
-
+    // mask, where the map should actually render.
     mask = RShape.createRectangle(getEffectiveX(), getEffectiveY(), width, height);
 
+    // initialize state abbreviations
     String[] abbr = new String[]{"AL", "AK", "AZ", "AR", "CA", "CO", "CT", "DE", "FL", "GA", "HI", "ID", "IL", "IN", "IA", "KS", "KY", "LA", "ME", "MD", "MA", "MI",
       "MN", "MS", "MO", "MT", "NE", "NV", "NH", "NJ", "NM", "NY", "NC", "ND", "OH", "OK", "OR", "PA", "RI", "SC", "SD", "TN", "TX", "UT", "VT", "VA", "WA",
       "WV", "WI", "WY"};
     stateAbbreviations = abbr;
     selectedState = null;
-
-    for ( int i = 0; i < stateAbbreviations.length; i++ ) {
-      String abbrev = stateAbbreviations[i];
-      map.getChild(abbrev).setFill(color(0));
-    }
+    
+    // mask the map so its ready to render
+    // we only mask when a change has occured, to avoid lag.
     mask();
   }
   
+  // will only be interactive when active
   void setActive(Boolean thing) {
     active = thing;
   }
-
+  
+  // zoom function; will zoom out or in before hitting max zoom, in which case it will stop.
+  // we do some weirdness here in order to keep use of geomerative's fancy zoom function.
   void onMouseWheel(int wheel) {
     if ( !active ) {
       return;
@@ -104,7 +105,6 @@ class MapWidget extends Widget {
   }
 
   void onMouseDragged(int mouseX, int mouseY, int pmouseX, int pmouseY) {
-    //calculateCenterPoint();
     //TODO: Limits
     if ( !active || !isTouching(mouseX, mouseY) ) {
       return;
@@ -112,9 +112,12 @@ class MapWidget extends Widget {
     float translateX = mouseX-pmouseX;
     float translateY = mouseY-pmouseY;
     map.translate(translateX, translateY);
+    
+    // signify that the map has changed, so we mask it again.
     changes = true;
   }
 
+  // mouse hovering (called for every widget every frame)
   void checkCollisions(int mouseX, int mouseY) {
     if ( !active ) {
       return;
@@ -134,29 +137,34 @@ class MapWidget extends Widget {
     }
   }
 
-  void calculateCenterPoint() {
-    mapCenterX = map.getX() + (map.width/2);
-    mapCenterY = map.getY() + (map.height/2);
-  }
-
   void draw() {
+    // draw background
     super.drawThis();
+    
     pushMatrix();
+    // would usually just do getEffective, but for some reason the map is drawn off by X, Y.
     translate(getEffectiveX()-getX(), getEffectiveY()-getY());
+    
+    // mask if the map is not up to date.
     if ( changes ) {
       mask();
       changes = false;
     }
+    
     fill(255);
     stroke(0);
     maskedMap.draw();
+    
+    // color the selected state
     if ( selectedState != null ) {
       fill(color(255, 0, 0));
       maskedMap.getChild(selectedState).draw();
     }
+    
     popMatrix();
   }
-
+  
+  // method that gets the full state name from an abbreviation
   String getFullStateName(String abbreviation) {
     if ( abbreviation.length() > 2 ) {
       return "";
@@ -170,10 +178,12 @@ class MapWidget extends Widget {
     return "";
   }
 
+  // returns the current selected state abbreviation
   String getSelectedState() {
     return selectedState;
   }
 
+  // masks the map and stores it in maskedmap.
   void mask() {
     RShape newMask;
     newMask = mask;
