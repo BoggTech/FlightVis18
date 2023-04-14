@@ -1,10 +1,11 @@
-class SearchBar extends Widget {
+// Searchbar // Author: Ted // Contributors: Darryl
 
+class SearchBar extends Widget {
   ArrayList<String> insideSearchBar = new ArrayList<String>();
   private int textLimit = 40;
-  String result =  "";
   boolean selected = false;
 
+  // lots of constructors, most for convenience (leaving out non-mandatory vars)
   SearchBar() {
     this(0, 0, 0, 0, color(0), null);
   }
@@ -22,13 +23,15 @@ class SearchBar extends Widget {
   }
 
   SearchBar(float x, float y, float width, float height, color widgetColor, Widget parent) {
-    super(x, y, width, height, widgetColor, null);
+    super(x, y, width, height, widgetColor, parent);
     addChild(new TextWidget(15, 0, (int) width-10, 1200));
   }
 
   void draw() {
     TextWidget label = getLabel();
     String originalLabel = label.getLabel();
+    
+    // blinky
     if ( frameCount % 80 < 40 && selected && insideSearchBar.size() < 40 ) {
         label.setLabel(label.getLabel() + "|");
       }
@@ -41,6 +44,7 @@ class SearchBar extends Widget {
     return label;
   }
 
+  // select the search bar and blink when selected (this is handled in draw(), set selected to true)
   void onClick(int mouseX, int mouseY) {
     if ( isTouching(mouseX, mouseY) ) {
       selected = true;
@@ -56,7 +60,8 @@ class SearchBar extends Widget {
       setDefaultBorderColor(0);
     }
   }
-
+  
+  // input handling; will only take input when selected
   void onKeyPressed(char keyValue) {
     if ( selected ) {
       if ( keyValue == BACKSPACE ) {
@@ -64,10 +69,10 @@ class SearchBar extends Widget {
           insideSearchBar.remove(insideSearchBar.size()-1);
         }
       } else if ( insideSearchBar.size() < textLimit
-          && (keyValue <= 'Z' && keyValue >= 'A'
-          || keyValue <= 'z' && keyValue >= 'a') 
+          && ( keyValue <= 'Z' && keyValue >= 'A'
+          || keyValue <= 'z' && keyValue >= 'a' 
           || keyValue <= '9' && keyValue >= '0'
-          || keyValue == ' ' || keyValue == '/') {
+          || keyValue == ' ' || keyValue == '/') ) {
           insideSearchBar.add(String.valueOf(keyValue));
       }
       String label = "";
@@ -80,6 +85,7 @@ class SearchBar extends Widget {
     }
   }
   
+  // return a string value of the contents of the searchbar.
   String getResult(){
     String result = "";
     for ( int i = 0; i < insideSearchBar.size(); i++ ) {

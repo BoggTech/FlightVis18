@@ -1,3 +1,5 @@
+// TextWidget // Author: Michael // Contributors: Darryl
+
 class TextWidget extends Widget {
   String fontName;
   int fontSize;

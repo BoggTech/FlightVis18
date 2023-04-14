@@ -1,4 +1,9 @@
+// ProgramScreens // Contributors: Darryl, Tiernan, Ted
+// We keep all of these in the same file because we're running out of space in the default processing IDE, so apologies for 
+// how confusing it might be to navigate.
+
 // ---------------- MENU ----------------
+// Author: Darryl Boggins
 class MenuScreen extends Screen {
   final int LOGOX = SCREENX/2-250;
   final int LOGOY = SCREENY/2-280;
@@ -11,21 +16,25 @@ class MenuScreen extends Screen {
   int totalFlights;
   MenuScreen() {
     super();
+    // get the username of the pc user running the program
     String pcName = System.getProperty("user.name");
 
     totalFlights = dataFile.getTotal();
     String newString = fancyNumber(totalFlights);
+    // welcome message
     title = new TextWidget("", "Welcome, " + pcName
       + ". \nThere have been " + newString + " flights in the past month."
       + "\nPlease see available options below.", 32, 10, TEXT_START, SCREENX, 256);
     title.setAlign(CENTER);
-
-
-
+    
+    // set up the menu buttons
+    // calculating some values here for spacing them out
+    // if you add another button, change buttonCount.
     int buttonCount = 3;
     int freeSpace = SCREENX - (buttonCount+1)*buttonMargin;
     int buttonWidth = freeSpace/buttonCount;
-
+    
+    // search screen button
     searchButton = new Button(buttonMargin*1+(freeSpace/buttonCount)*0, SCREENY-(buttonHeight+buttonMargin), buttonWidth, buttonHeight);
     searchButton.setLabel("Search");
     searchButton.setLabelSize(48);
@@ -34,6 +43,7 @@ class MenuScreen extends Screen {
     searchButton.setLabelColor(TEXT_COLOR);
     searchButton.setEvent(GLOBAL_EVENT_SEARCH_SCREEN);
 
+    // overview screen button
     overviewButton = new Button(buttonMargin*2+(freeSpace/buttonCount)*1, SCREENY-(buttonHeight+buttonMargin), buttonWidth, buttonHeight);
     overviewButton.setLabel("Overview");
     overviewButton.setLabelSize(48);
@@ -42,6 +52,7 @@ class MenuScreen extends Screen {
     overviewButton.setLabelColor(TEXT_COLOR);
     overviewButton.setEvent(GLOBAL_EVENT_OVERVIEW_SCREEN);
 
+    // map screen button
     mapButton = new Button(buttonMargin*3+(freeSpace/buttonCount)*2, SCREENY-(buttonHeight+buttonMargin), buttonWidth, buttonHeight);
     mapButton.setLabel("Map");
     mapButton.setLabelSize(48);
@@ -51,7 +62,7 @@ class MenuScreen extends Screen {
     mapButton.setLabelColor(TEXT_COLOR);
     mapButton.setEvent(GLOBAL_EVENT_MAP_SCREEN);
 
-
+    // add the widgets to render
     addWidget(title);
     addWidget(searchButton);
     addWidget(mapButton);
@@ -61,6 +72,8 @@ class MenuScreen extends Screen {
 
   void draw() {
     super.draw();
+    
+    // logo
     fill(TEXT_COLOR);
     textAlign(LEFT, LEFT);
     stroke(getDefaultBorderColor());
@@ -70,6 +83,7 @@ class MenuScreen extends Screen {
 }
 
 // ---------------- SEARCH ----------------
+// Author: Ted // Contributors: Darryl //
 class SearchScreen extends Screen {
 
   Widget info;
@@ -433,6 +447,7 @@ class SearchScreen extends Screen {
 }
 
 // ---------------- MAP ----------------
+// Author: Darryl Boggins
 class MapScreen extends Screen {
   String formatString = "%s\nTotal Flights: %s (%.2f%%)\nDiverted: %s\nCancelled: %s\n";
   MapWidget map;
@@ -451,20 +466,25 @@ class MapScreen extends Screen {
     map.setColor(color(0));
 
     totalFlights = (float) dataFile.getTotal();
-
+    
+    // if the map is being dragged or just clicked
     drag = false;
-
+    
+    // back button
     backButton = new Button(25, SCREENY-65, 80, 55);
     backButton.setLabel("BACK");
     backButton.setAlign(CENTER);
     backButton.setLabelSize(24);
     backButton.moveLabel(0, -3);
     backButton.setEvent(GLOBAL_EVENT_MENU_SCREEN);
-
+    
+    // state label in the bottom right
     stateLabel = new TextWidget("", "test", 48, SCREENX-600, SCREENY-65, 600, 65);
     stateLabel.move(-25, -6);
     stateLabel.setAlign(RIGHT);
-
+    
+    // info box + label
+    // this could probably be a class extending widget, but we can assemble it here.
     info = new Widget(SCREENX/2-250, SCREENY/2-250, 500, 500);
     info.setSelectedBorderColor(info.getDefaultBorderColor());
     infoLabel = new TextWidget(10, 10, int(info.getWidth()-10), int(info.getHeight()-40));
@@ -484,10 +504,6 @@ class MapScreen extends Screen {
     pieChart = new PieChart(data, colors, 250, 350, 250);
     info.addChild(pieChart);
 
-
-
-
-
     addWidget(map);
     addWidget(backButton);
     addWidget(stateLabel);
@@ -495,9 +511,10 @@ class MapScreen extends Screen {
   }
 
   void draw() {
+    // get label of currently selecte
     String state = map.getSelectedState();
     if ( state != null ) {
-      if ( currentState != state ) {
+      if ( currentState == null || !currentState.equals(state) ) {
         stateLabel.setLabel(map.getFullStateName(state));
       }
     } else {
@@ -505,7 +522,8 @@ class MapScreen extends Screen {
     }
     super.draw();
   }
-
+  
+  // called by widget on mouse release.
   void onMouseReleased(int mouseX, int mouseY) {
     String state = map.getSelectedState();
     if ( drag ) {
@@ -513,6 +531,8 @@ class MapScreen extends Screen {
       return;
     }
     if ( state != null && !info.shown && map.isTouching(mouseX, mouseY)) {
+      // initialize infobox; user has clicked a state and info
+      // isnt already showing
       map.setActive(false);
       int totalInt = dataFile.countTotalState(state);
       int divertedInt = dataFile.countDivertedState(state);
@@ -528,8 +548,10 @@ class MapScreen extends Screen {
       pieChart.setup();
       info.show();
     } else {
+      // user clicked but info is potentially already shown; lets see if theyre clicking the
+      // back button on the info
       Button button = (Button) info.getChild(1);
-      if ( button.isTouching(mouseX, mouseY) ) {
+      if ( button.isTouching(mouseX, mouseY) && info.shown ) {
         map.setActive(true);
         map.checkCollisions(mouseX, mouseY);
         info.hide();
@@ -544,6 +566,7 @@ class MapScreen extends Screen {
 
 
 // ---------------OVERVIEW----------
+// Author: Tiernan
 class OverviewScreen extends Screen {
   int cancelledFlights = dataFile.getTotalCancelled();
   int diverted = dataFile.getTotalDiverted();

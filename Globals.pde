@@ -1,3 +1,6 @@
+// Globals.pde
+// Keep all global values in this file, such as events and commonly-used constants
+
 final int GLOBAL_EVENT_NULL = 0;
 final int GLOBAL_EVENT_RIGHT = -1;
 final int GLOBAL_EVENT_LEFT = -2;  
